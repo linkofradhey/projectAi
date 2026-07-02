@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Data Preprocessing Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: #1a202c;
+      margin-bottom: 8px;
+    }
+
+    p.subtitle {
+      color: #718096;
+      margin-bottom: 32px;
+      font-size: 0.95rem;
+    }
+
+    /* ── Config Panel ─────────────────────────────── */
+    .config-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 28px 32px;
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 32px;
+    }
+
+    .config-panel h2 {
+      font-size: 1rem;
+      color: #2d3748;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #4a5568;
+    }
+
+    .form-group select,
+    .form-group input[type="text"] {
+      padding: 9px 12px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #2d3748;
+      background: #f7fafc;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .form-group select:focus,
+    .form-group input[type="text"]:focus {
+      border-color: #3182ce;
+      background: white;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: #2d3748;
+      cursor: pointer;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #3182ce;
+      cursor: pointer;
+    }
+
+    /* Constant value field — shown only when CONSTANT strategy is selected */
+    #constantGroup {
+      display: none;
+    }
+
+    .run-btn {
+      width: 100%;
+      padding: 12px;
+      background: #3182ce;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+
+    .run-btn:hover  { background: #2b6cb0; }
+    .run-btn:active { background: #2c5282; }
+    .run-btn:disabled {
+      background: #a0aec0;
+      cursor: not-allowed;
+    }
+
+    /* ── Status Badge ─────────────────────────────── */
+    .status-badge {
+      margin-bottom: 24px;
+      padding: 6px 20px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .status-idle    { background: #edf2f7; color: #718096; }
+    .status-loading { background: #ebf8ff; color: #2b6cb0; }
+    .status-success { background: #c6f6d5; color: #276749; }
+    .status-error   { background: #fed7d7; color: #9b2c2c; }
+
+    /* ── Result Cards ─────────────────────────────── */
+    .cards {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px 32px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      min-width: 160px;
+      transition: transform 0.2s;
+    }
+
+    .card:hover { transform: translateY(-2px); }
+
+    .card .value {
+      font-size: 2.4rem;
+      font-weight: bold;
+      color: #3182ce;
+    }
+
+    .card .label {
+      font-size: 0.85rem;
+      color: #718096;
+      margin-top: 6px;
+    }
+
+    /* ── Output Path ──────────────────────────────── */
+    .output-path {
+      background: white;
+      border-radius: 10px;
+      padding: 16px 24px;
+      font-size: 0.9rem;
+      color: #2d3748;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+      max-width: 560px;
+      width: 100%;
+      word-break: break-all;
+    }
+
+    .output-path span {
+      font-weight: bold;
+      color: #38a169;
+    }
+
+    /* ── Debug Panel ──────────────────────────────── */
+    .debug-panel {
+      background: #1a202c;
+      color: #68d391;
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-size: 0.8rem;
+      font-family: 'Courier New', monospace;
+      max-width: 560px;
+      width: 100%;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .debug-panel .debug-title {
+      color: #a0aec0;
+      margin-bottom: 8px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧹 Data Preprocessing Dashboard</h1>
+  <p class="subtitle">Week 1 & 2 — Cleaning Pipeline Results</p>
+
+  <!-- Status Badge -->
+  <div class="status-badge status-idle" id="status">⚙️ Configure and click Run</div>
+
+  <!-- ── Config Panel ───────────────────────────── -->
+  <div class="config-panel">
+    <h2>⚙️ Preprocessing Configuration</h2>
+
+    <!-- Missing Value Strategy — ALWAYS SENT, never null -->
+    <div class="form-group">
+      <label for="strategy">Missing Value Strategy</label>
+      <select id="strategy" onchange="toggleConstantField()">
+        <option value="MEAN"     selected>MEAN (default)</option>
+        <option value="MEDIAN">MEDIAN</option>
+        <option value="MODE">MODE</option>
+        <option value="CONSTANT">CONSTANT (fill with value)</option>
+        <option value="DROP">DROP (remove rows)</option>
+      </select>
+    </div>
+
+    <!-- Constant Value — shown only when CONSTANT is selected -->
+    <div class="form-group" id="constantGroup">
+      <label for="constantValue">Constant Fill Value</label>
+      <input type="text" id="constantValue" value="0" placeholder="e.g. 0 or N/A" />
+    </div>
+
+    <!-- Checkboxes -->
+    <div class="form-group">
+      <label>Processing Options</label>
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" id="removeDuplicates" checked />
+          Remove Duplicates
+        </label>
+        <label>
+          <input type="checkbox" id="normalizeNumerical" checked />
+          Normalize Numerical Columns
+        </label>
+        <label>
+          <input type="checkbox" id="encodeCategorical" />
+          Encode Categorical Columns
+        </label>
+      </div>
+    </div>
+
+    <!-- File Paths -->
+    <div class="form-group">
+      <label for="inputPath">Input File Path</label>
+      <input type="text" id="inputPath" value="src/main/resources/input.xlsx" />
+    </div>
+
+    <div class="form-group">
+      <label for="outputPath">Output File Path</label>
+      <input type="text" id="outputPath" value="src\main\resources\output.xlsx" />
+    </div>
+
+    <button class="run-btn" id="runBtn" onclick="runPreprocessing()">
+      ▶ Run Preprocessing
+    </button>
+  </div>
+
+  <!-- ── Result Cards ───────────────────────────── -->
+  <div class="cards">
+    <div class="card">
+      <div class="value" id="totalRows">—</div>
+      <div class="label">Total Rows Loaded</div>
+    </div>
+    <div class="card">
+      <div class="value" id="duplicates">—</div>
+      <div class="label">Duplicates Removed</div>
+    </div>
+    <div class="card">
+      <div class="value" id="missing">—</div>
+      <div class="label">Missing Values Filled</div>
+    </div>
+  </div>
+
+  <!-- ── Output Path Display ───────────────────── -->
+  <div class="output-path">
+    📁 Output File: <span id="outputPathDisplay">—</span>
+  </div>
+
+  <!-- ── Debug Panel ───────────────────────────── -->
+  <div class="debug-panel" id="debugPanel">
+    <div class="debug-title">📋 Request / Response Log</div>
+    <span id="debugLog">Waiting for request...</span>
+  </div>
+
+
+  <script>
+
+    // ── Toggle constant value input ─────────────────────────────
+    function toggleConstantField() {
+      const strategy = document.getElementById('strategy').value;
+      document.getElementById('constantGroup').style.display =
+        strategy === 'CONSTANT' ? 'block' : 'none';
+    }
+
+    // ── Main preprocessing call ─────────────────────────────────
+    function runPreprocessing() {
+
+      const btn         = document.getElementById('runBtn');
+      const statusEl    = document.getElementById('status');
+      const debugLog    = document.getElementById('debugLog');
+
+      // ── Build request body — missingValueStrategy is ALWAYS set ──
+      const requestBody = {
+        missingValueStrategy : document.getElementById('strategy').value || "MEAN",  // ✅ Never null
+        constantValue        : document.getElementById('constantValue').value || "0",
+        removeDuplicates     : document.getElementById('removeDuplicates').checked,
+        normalizeNumerical   : document.getElementById('normalizeNumerical').checked,
+        encodeCategorical    : document.getElementById('encodeCategorical').checked,
+        inputFilePath        : document.getElementById('inputPath').value.trim()  || "src/main/resources/data/input.xlsx",
+        outputFilePath       : document.getElementById('outputPath').value.trim() || "output/clean_dataset.csv"
+      };
+
+      // ── Show loading state ──────────────────────────────────────
+      btn.disabled       = true;
+      btn.textContent    = '⏳ Running...';
+      statusEl.className = 'status-badge status-loading';
+      statusEl.textContent = '⏳ Sending request...';
+
+      // ── Log the outgoing request ────────────────────────────────
+      debugLog.textContent = '📤 REQUEST:\n' + JSON.stringify(requestBody, null, 2);
+
+      // ── Fetch call ──────────────────────────────────────────────
+      fetch('http://localhost:8000/api/preprocess', {
+        method  : 'POST',
+        headers : { 'Content-Type': 'application/json' },  // ✅ Required
+        body    : JSON.stringify(requestBody)               // ✅ Full body with strategy
+      })
+      .then(res => {
+        if (!res.ok) {
+          return res.text().then(errText => {
+            throw new Error(`HTTP ${res.status}: ${errText}`);
+          });
+        }
+        return res.json();
+      })
+      .then(data => {
+        // ── Populate result cards ───────────────────────────────
+        document.getElementById('totalRows').textContent   = data.totalRowsLoaded   ?? '—';
+        document.getElementById('duplicates').textContent  = data.duplicatesRemoved ?? '—';
+        document.getElementById('missing').textContent     = data.missingValuesFilled ?? '—';
+        document.getElementById('outputPathDisplay').textContent = data.outputPath ?? '—';
+
+        // ── Success state ───────────────────────────────────────
+        statusEl.className   = 'status-badge status-success';
+        statusEl.textContent = '✅ Preprocessing Complete!';
+
+        // ── Log the response ────────────────────────────────────
+        debugLog.textContent =
+          '📤 REQUEST:\n'  + JSON.stringify(requestBody, null, 2) +
+          '\n\n📥 RESPONSE:\n' + JSON.stringify(data, null, 2);
+      })
+      .catch(err => {
+        // ── Error state ─────────────────────────────────────────
+        statusEl.className   = 'status-badge status-error';
+        statusEl.textContent = '❌ Error: ' + err.message;
+
+        debugLog.textContent =
+          '📤 REQUEST:\n'  + JSON.stringify(requestBody, null, 2) +
+          '\n\n❌ ERROR:\n' + err.message;
+
+        console.error('Preprocessing failed:', err);
+      })
+      .finally(() => {
+        // ── Re-enable button ────────────────────────────────────
+        btn.disabled     = false;
+        btn.textContent  = '▶ Run Preprocessing';
+      });
+    }
+
+  </script>
+
+</body>
+</html>
