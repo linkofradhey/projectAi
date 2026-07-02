@@ -1,0 +1,122 @@
+############################
+# OS / Editor junk
+############################
+# macOS
+.DS_Store
+.AppleDouble
+.apdisk
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Editor settings (optional – keep if you want to share settings globally)
+.vscode/
+.idea/
+*.iml
+
+############################
+# Java / Maven / Gradle
+############################
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+
+# Gradle
+.gradle/
+build/
+!gradle-wrapper.jar
+.gradle-cache/
+
+# Logs
+logs/
+*.log
+
+# Spring Boot
+# If you package as a fat jar/war, do not commit them
+*.jar
+*.war
+
+############################
+# Application runtime / temp
+############################
+# Temp files
+tmp/
+temp/
+*.tmp
+
+# H2 / other embedded DBs
+*.h2.db
+*.mv.db
+*.db
+
+############################
+# Frontend (if applicable)
+############################
+node_modules/
+dist/
+build/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+package-lock.json
+# (Optional: keep lock file if your team prefers committing it)
+
+############################
+# Data files (inputs/outputs)
+############################
+# Generated cleaned datasets
+output/
+*.csv
+*.tsv
+*.xlsx
+*.xls
+
+# Large raw datasets (if they are not meant to be versioned)
+data/
+datasets/
+*.bak
+
+# If you have a specific location, e.g.:
+# src/main/resources/data/input.xlsx  -> keep
+# output/clean_dataset.csv            -> ignore
+# In that case, you can be more explicit:
+# /output/
+# /output/*.csv
+# /output/*.xlsx
+
+############################
+# IDE-specific (more detailed)
+############################
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# IntelliJ (if you want stricter ignore)
+out/
+.idea/*
+!.idea/codeStyles/
+!.idea/runConfigurations/
+
+############################
+# Others
+############################
+# Coverage / reports
+coverage/
+*.exec
+*.ec
+jacoco.exec
+surefire-reports/
+test-output/
+
+# Local environment/config overrides
+*.env
+.env.*
+application-local.properties
+application-*.yml
