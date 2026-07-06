@@ -1,6 +1,5 @@
 package kumaranai.PreProcessing;
 
-//src/main/java/com/datapreprocessing/normalizer/NumericalNormalizer.java
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Component;
 import kumaranai.model.DataRecord;
 @Component
 public class NumericalNormalizer {
-
- // ─── Normalization Strategy Enum ─────────────────────────────
  public enum NormalizationType {
      MIN_MAX,    // Scales values to [0, 1]
      Z_SCORE,    // Standardizes to mean=0, std=1
@@ -23,30 +20,19 @@ public class NumericalNormalizer {
 
  private final NormalizationType normalizationType;
 
- // Stores computed stats per column for reporting / inverse transform
  private final Map<String, double[]> statsRegistry = new LinkedHashMap<>();
 
- // ─── Constructors ────────────────────────────────────────────
 
- /** Default: Min-Max Normalization */
  public NumericalNormalizer() {
      this.normalizationType = NormalizationType.MIN_MAX;
  }
 
- /** Custom normalization type */
  public NumericalNormalizer(NormalizationType normalizationType) {
      this.normalizationType = normalizationType;
  }
 
- // ─── Main Entry Point ────────────────────────────────────────
 
- /**
-  * Normalizes the specified numerical columns using the configured strategy.
-  *
-  * @param records           List of DataRecord objects
-  * @param numericalColumns  List of column names to normalize
-  * @return Normalized list of DataRecord objects
-  */
+ 
  public List<DataRecord> normalize(List<DataRecord> records, List<String> numericalColumns) {
 
      if (records == null || records.isEmpty()) {
@@ -67,12 +53,8 @@ public class NumericalNormalizer {
      }
  }
 
- // ─── Min-Max Normalization ───────────────────────────────────
 
- /**
-  * Min-Max Normalization: scales all values to the range [0, 1].
-  * Formula: (x - min) / (max - min)
-  */
+ 
  private List<DataRecord> applyMinMax(List<DataRecord> records, List<String> columns) {
 
      for (String column : columns) {
@@ -102,12 +84,7 @@ public class NumericalNormalizer {
      return records;
  }
 
- // ─── Z-Score Standardization ─────────────────────────────────
-
- /**
-  * Z-Score Standardization: transforms values to have mean=0 and std=1.
-  * Formula: (x - mean) / std
-  */
+ 
  private List<DataRecord> applyZScore(List<DataRecord> records, List<String> columns) {
 
      for (String column : columns) {
@@ -137,12 +114,7 @@ public class NumericalNormalizer {
      return records;
  }
 
- // ─── Robust Scaling ──────────────────────────────────────────
 
- /**
-  * Robust Scaling: uses median and IQR — less sensitive to outliers.
-  * Formula: (x - median) / IQR
-  */
  private List<DataRecord> applyRobust(List<DataRecord> records, List<String> columns) {
 
      for (String column : columns) {
@@ -175,9 +147,7 @@ public class NumericalNormalizer {
      return records;
  }
 
- // ─── Utility Helpers ─────────────────────────────────────────
 
- /** Applies a transformation lambda to a single field in a record. */
  private void applyTransform(DataRecord record, String column,
                              java.util.function.DoubleUnaryOperator transform) {
      String raw = record.getField(column);
@@ -193,7 +163,6 @@ public class NumericalNormalizer {
      }
  }
 
- /** Extracts all valid double values from a column. */
  private List<Double> extractDoubles(List<DataRecord> records, String column) {
      return records.stream()
              .map(r -> r.getField(column))
@@ -231,23 +200,10 @@ public class NumericalNormalizer {
      return sorted.get(Math.max(0, Math.min(index, sorted.size() - 1)));
  }
 
- // ─── Reporting ───────────────────────────────────────────────
-
- /**
-  * Returns the stats registry (min/max, mean/std, or median/IQR per column).
-  */
  public Map<String, double[]> getStatsRegistry() {
      return Collections.unmodifiableMap(statsRegistry);
  }
 
- /**
-  * Inverse transforms a normalized value back to its original scale.
-  * Only supported for MIN_MAX and Z_SCORE.
-  *
-  * @param column         Column name
-  * @param scaledValue    The normalized/standardized value
-  * @return Original value before normalization
-  */
  public double inverseTransform(String column, double scaledValue) {
      double[] stats = statsRegistry.get(column);
      if (stats == null) throw new IllegalArgumentException("No stats found for column: " + column);

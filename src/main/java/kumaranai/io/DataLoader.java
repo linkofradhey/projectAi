@@ -68,13 +68,11 @@ public class DataLoader {
         return records;
     }
 
-    // ─── Cell Value Extractor ─────────────────────────────────
     private String getCellValueAsString(Cell cell) {
         if (cell == null) return "";
         switch (cell.getCellType()) {
             case STRING:  return cell.getStringCellValue().trim();
             case NUMERIC: 
-                // Avoid scientific notation for whole numbers
                 double val = cell.getNumericCellValue();
                 return (val == Math.floor(val)) 
                     ? String.valueOf((long) val) 
@@ -85,9 +83,7 @@ public class DataLoader {
         }
     }
 
-    // ─── Existing CSV Reader (unchanged) ──────────────────────
     private List<DataRecord> loadFromCsv(String filePath) {
-        // your existing CSV loading logic
         return new ArrayList<>();
     }
 }
