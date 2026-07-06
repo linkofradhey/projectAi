@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+          
+        
+        <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -17,17 +19,8 @@
       min-height: 100vh;
     }
 
-    h1 {
-      font-size: 1.8rem;
-      color: #1a202c;
-      margin-bottom: 8px;
-    }
-
-    p.subtitle {
-      color: #718096;
-      margin-bottom: 32px;
-      font-size: 0.95rem;
-    }
+    h1 { font-size: 1.8rem; color: #1a202c; margin-bottom: 8px; }
+    p.subtitle { color: #718096; margin-bottom: 32px; font-size: 0.95rem; }
 
     /* ── Config Panel ─────────────────────────────── */
     .config-panel {
@@ -35,7 +28,7 @@
       border-radius: 12px;
       padding: 28px 32px;
       width: 100%;
-      max-width: 560px;
+      max-width: 620px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.08);
       margin-bottom: 32px;
     }
@@ -55,7 +48,7 @@
       gap: 6px;
     }
 
-    .form-group label {
+    .form-group > label {
       font-size: 0.85rem;
       font-weight: 600;
       color: #4a5568;
@@ -79,120 +72,191 @@
       background: white;
     }
 
-    .checkbox-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .hint { font-size: 0.78rem; color: #a0aec0; margin-top: 2px; }
 
-    .checkbox-group label {
+    .checkbox-row {
       display: flex;
       align-items: center;
       gap: 10px;
       font-size: 0.9rem;
       color: #2d3748;
       cursor: pointer;
+      margin-bottom: 4px;
+      font-weight: normal;
     }
 
-    .checkbox-group input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      accent-color: #3182ce;
-      cursor: pointer;
+    .checkbox-row input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: #3182ce; cursor: pointer;
     }
 
-    /* Constant value field — shown only when CONSTANT strategy is selected */
-    #constantGroup {
-      display: none;
-    }
+    .sub-input { display: none; margin-top: 4px; margin-bottom: 10px; }
+    .sub-input.visible { display: block; }
+
+    #constantGroup { display: none; }
 
     .run-btn {
-      width: 100%;
-      padding: 12px;
-      background: #3182ce;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 8px;
+      width: 100%; padding: 12px;
+      background: #3182ce; color: white;
+      border: none; border-radius: 8px;
+      font-size: 1rem; font-weight: 600;
+      cursor: pointer; margin-top: 8px;
       transition: background 0.2s;
     }
-
-    .run-btn:hover  { background: #2b6cb0; }
-    .run-btn:active { background: #2c5282; }
-    .run-btn:disabled {
-      background: #a0aec0;
-      cursor: not-allowed;
-    }
+    .run-btn:hover   { background: #2b6cb0; }
+    .run-btn:active  { background: #2c5282; }
+    .run-btn:disabled { background: #a0aec0; cursor: not-allowed; }
 
     /* ── Status Badge ─────────────────────────────── */
     .status-badge {
       margin-bottom: 24px;
-      padding: 6px 20px;
+      padding: 8px 24px;
       border-radius: 20px;
       font-size: 0.85rem;
       font-weight: 600;
       transition: all 0.3s;
     }
-
     .status-idle    { background: #edf2f7; color: #718096; }
     .status-loading { background: #ebf8ff; color: #2b6cb0; }
     .status-success { background: #c6f6d5; color: #276749; }
     .status-error   { background: #fed7d7; color: #9b2c2c; }
 
-    /* ── Result Cards ─────────────────────────────── */
+    /* ── Results Section ──────────────────────────── */
+    .results-section {
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 32px;
+    }
+
+    .results-section h2 {
+      font-size: 1rem;
+      color: #2d3748;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 8px;
+    }
+
+    /* ── Summary Cards ────────────────────────────── */
     .cards {
       display: flex;
-      gap: 20px;
+      gap: 16px;
       flex-wrap: wrap;
       justify-content: center;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
     }
 
     .card {
       background: white;
       border-radius: 12px;
-      padding: 24px 32px;
+      padding: 20px 24px;
       text-align: center;
       box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-      min-width: 160px;
+      min-width: 140px;
+      flex: 1;
       transition: transform 0.2s;
     }
-
     .card:hover { transform: translateY(-2px); }
-
     .card .value {
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       font-weight: bold;
       color: #3182ce;
     }
-
     .card .label {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #718096;
       margin-top: 6px;
     }
+
+    /* ── Detail Result Boxes ──────────────────────── */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 560px) {
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+
+    .detail-box {
+      background: white;
+      border-radius: 12px;
+      padding: 18px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      border-top: 3px solid transparent;
+    }
+
+    .detail-box.blue-border   { border-top-color: #3182ce; }
+    .detail-box.red-border    { border-top-color: #e53e3e; }
+    .detail-box.purple-border { border-top-color: #805ad5; }
+    .detail-box.green-border  { border-top-color: #38a169; }
+
+    .detail-box .box-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .box-title.blue   { color: #3182ce; }
+    .box-title.red    { color: #e53e3e; }
+    .box-title.purple { color: #805ad5; }
+    .box-title.green  { color: #38a169; }
+
+    .detail-box .box-content {
+      font-size: 0.87rem;
+      color: #4a5568;
+      line-height: 1.9;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3px 0;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 0.85rem;
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-row .col-name  { color: #4a5568; font-weight: 500; }
+    .detail-row .col-val   { color: #2d3748; font-weight: 700; }
+
+    /* Tags */
+    .tag {
+      display: inline-block;
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 0.8rem;
+      margin: 2px 3px 2px 0;
+      font-weight: 600;
+    }
+    .tag.blue   { background: #ebf8ff; color: #2b6cb0; }
+    .tag.purple { background: #faf5ff; color: #553c9a; }
+    .tag.green  { background: #f0fff4; color: #276749; }
+    .tag.orange { background: #fffaf0; color: #c05621; }
+    .tag.red    { background: #fff5f5; color: #c53030; }
+
+    .no-data { color: #a0aec0; font-style: italic; font-size: 0.85rem; }
 
     /* ── Output Path ──────────────────────────────── */
     .output-path {
       background: white;
       border-radius: 10px;
-      padding: 16px 24px;
+      padding: 14px 20px;
       font-size: 0.9rem;
       color: #2d3748;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       margin-bottom: 24px;
-      max-width: 560px;
+      max-width: 700px;
       width: 100%;
       word-break: break-all;
     }
-
-    .output-path span {
-      font-weight: bold;
-      color: #38a169;
-    }
+    .output-path span { font-weight: bold; color: #38a169; }
 
     /* ── Debug Panel ──────────────────────────────── */
     .debug-panel {
@@ -202,14 +266,13 @@
       padding: 16px 20px;
       font-size: 0.8rem;
       font-family: 'Courier New', monospace;
-      max-width: 560px;
+      max-width: 700px;
       width: 100%;
       white-space: pre-wrap;
       word-break: break-all;
-      max-height: 200px;
+      max-height: 260px;
       overflow-y: auto;
     }
-
     .debug-panel .debug-title {
       color: #a0aec0;
       margin-bottom: 8px;
@@ -222,20 +285,20 @@
 <body>
 
   <h1>🧹 Data Preprocessing Dashboard</h1>
-  <p class="subtitle">Week 1 & 2 — Cleaning Pipeline Results</p>
+  <p class="subtitle">Automated Cleaning Pipeline — Results Viewer</p>
 
   <!-- Status Badge -->
   <div class="status-badge status-idle" id="status">⚙️ Configure and click Run</div>
 
-  <!-- ── Config Panel ───────────────────────────── -->
+  <!-- ── Config Panel ─────────────────────────────── -->
   <div class="config-panel">
     <h2>⚙️ Preprocessing Configuration</h2>
 
-    <!-- Missing Value Strategy — ALWAYS SENT, never null -->
+    <!-- Missing Value Strategy -->
     <div class="form-group">
       <label for="strategy">Missing Value Strategy</label>
       <select id="strategy" onchange="toggleConstantField()">
-        <option value="MEAN"     selected>MEAN (default)</option>
+        <option value="MEAN" selected>MEAN (default)</option>
         <option value="MEDIAN">MEDIAN</option>
         <option value="MODE">MODE</option>
         <option value="CONSTANT">CONSTANT (fill with value)</option>
@@ -243,29 +306,64 @@
       </select>
     </div>
 
-    <!-- Constant Value — shown only when CONSTANT is selected -->
+    <!-- Constant Value (shown only for CONSTANT) -->
     <div class="form-group" id="constantGroup">
       <label for="constantValue">Constant Fill Value</label>
       <input type="text" id="constantValue" value="0" placeholder="e.g. 0 or N/A" />
     </div>
 
-    <!-- Checkboxes -->
+    <!-- Processing Options -->
     <div class="form-group">
       <label>Processing Options</label>
-      <div class="checkbox-group">
-        <label>
-          <input type="checkbox" id="removeDuplicates" checked />
-          Remove Duplicates
-        </label>
-        <label>
-          <input type="checkbox" id="normalizeNumerical" checked />
-          Normalize Numerical Columns
-        </label>
-        <label>
-          <input type="checkbox" id="encodeCategorical" />
-          Encode Categorical Columns
-        </label>
+
+      <!-- Remove Duplicates -->
+      <label class="checkbox-row">
+        <input type="checkbox" id="removeDuplicates" checked />
+        Remove Duplicates
+      </label>
+
+      <!-- Normalize Numerical -->
+      <label class="checkbox-row">
+        <input type="checkbox" id="normalizeNumerical" checked
+               onchange="toggleSubInput('normalizeNumerical','numColsGroup')" />
+        Normalize Numerical Columns
+      </label>
+      <div class="sub-input visible" id="numColsGroup">
+        <input type="text" id="numericalColumns"
+               placeholder="e.g. age, salary, score"
+               value="age, salary" />
+        <p class="hint">📌 Comma-separated column names to normalize</p>
       </div>
+
+      <!-- Encode Categorical -->
+      <label class="checkbox-row">
+        <input type="checkbox" id="encodeCategorical"
+               onchange="toggleSubInput('encodeCategorical','catColsGroup')" />
+        Encode Categorical Columns
+      </label>
+      <div class="sub-input" id="catColsGroup">
+        <input type="text" id="categoricalColumns"
+               placeholder="e.g. gender, department, city" />
+        <p class="hint">📌 Comma-separated column names to encode</p>
+      </div>
+    </div>
+
+    <!-- Encoding Type -->
+    <div class="form-group">
+      <label for="encodingType">Encoding Type</label>
+      <select id="encodingType">
+        <option value="label" selected>Label Encoding</option>
+        <option value="onehot">One-Hot Encoding</option>
+      </select>
+    </div>
+
+    <!-- Normalization Type -->
+    <div class="form-group">
+      <label for="normalizationType">Normalization Type</label>
+      <select id="normalizationType">
+        <option value="minmax" selected>Min-Max Scaling</option>
+        <option value="zscore">Z-Score Standardization</option>
+      </select>
     </div>
 
     <!-- File Paths -->
@@ -276,7 +374,7 @@
 
     <div class="form-group">
       <label for="outputPath">Output File Path</label>
-      <input type="text" id="outputPath" value="src\main\resources\output.xlsx" />
+      <input type="text" id="outputPath" value="src/main/resources/output.xlsx" />
     </div>
 
     <button class="run-btn" id="runBtn" onclick="runPreprocessing()">
@@ -284,119 +382,410 @@
     </button>
   </div>
 
-  <!-- ── Result Cards ───────────────────────────── -->
-  <div class="cards">
-    <div class="card">
-      <div class="value" id="totalRows">—</div>
-      <div class="label">Total Rows Loaded</div>
-    </div>
-    <div class="card">
-      <div class="value" id="duplicates">—</div>
-      <div class="label">Duplicates Removed</div>
-    </div>
-    <div class="card">
-      <div class="value" id="missing">—</div>
-      <div class="label">Missing Values Filled</div>
-    </div>
-  </div>
+  <!-- ── Results Section ─────────────────────────── -->
+  <div class="results-section">
+    <h2>📊 Preprocessing Results</h2>
 
-  <!-- ── Output Path Display ───────────────────── -->
-  <div class="output-path">
-    📁 Output File: <span id="outputPathDisplay">—</span>
-  </div>
+    <!-- Summary Count Cards -->
+    <div class="cards">
+      <div class="card">
+        <div class="value" id="totalRows">—</div>
+        <div class="label">Total Rows Loaded</div>
+      </div>
+      <div class="card">
+        <div class="value" id="duplicatesCard">—</div>
+		      <div class="label">Duplicates Removed</div>
+		    </div>
+		    <div class="card">
+		      <div class="value" id="missingCard">—</div>
+		      <div class="label">Missing Values Filled</div>
+		    </div>
+		  </div>
 
-  <!-- ── Debug Panel ───────────────────────────── -->
-  <div class="debug-panel" id="debugPanel">
-    <div class="debug-title">📋 Request / Response Log</div>
-    <span id="debugLog">Waiting for request...</span>
-  </div>
+		  <!-- ✅ 4 Detail Boxes -->
+		  <div class="detail-grid">
+
+		    <!-- Box 1: Missing Values -->
+		    <div class="detail-box blue-border">
+		      <div class="box-title blue">🔵 Missing Values Handled</div>
+		      <div class="box-content" id="missingDetail">
+		        <span class="no-data">Run preprocessing to see results.</span>
+		      </div>
+		    </div>
+
+		    <!-- Box 2: Duplicates Removed -->
+		    <div class="detail-box red-border">
+		      <div class="box-title red">🔴 Duplicates Removed</div>
+		      <div class="box-content" id="duplicatesDetail">
+		        <span class="no-data">Run preprocessing to see results.</span>
+		      </div>
+		    </div>
+
+		    <!-- Box 3: Categorical Encoding -->
+		    <div class="detail-box purple-border">
+		      <div class="box-title purple">🟣 Categorical Encoding</div>
+		      <div class="box-content" id="encodingDetail">
+		        <span class="no-data">Run preprocessing to see results.</span>
+		      </div>
+		    </div>
+
+		    <!-- Box 4: Numerical Normalization -->
+		    <div class="detail-box green-border">
+		      <div class="box-title green">🟢 Numerical Normalization</div>
+		      <div class="box-content" id="normalizationDetail">
+		        <span class="no-data">Run preprocessing to see results.</span>
+		      </div>
+		    </div>
+
+		  </div>
+		</div>
+
+		<!-- ── Output Path ─────────────────────────────── -->
+		<div class="output-path">
+		  📁 Output saved to: <span id="outputPathDisplay">—</span>
+		</div>
+
+		<!-- ── Debug Panel ─────────────────────────────── -->
+		<div class="debug-panel" id="debugPanel">
+		  <div class="debug-title">📋 Request / Response Log</div>
+		  <span id="debugLog">Waiting for request...</span>
+		</div>
 
 
-  <script>
+		<!-- ════════════════════════════════════════════════
+		     JAVASCRIPT
+		════════════════════════════════════════════════ -->
+		<script>
 
-    // ── Toggle constant value input ─────────────────────────────
-    function toggleConstantField() {
-      const strategy = document.getElementById('strategy').value;
-      document.getElementById('constantGroup').style.display =
-        strategy === 'CONSTANT' ? 'block' : 'none';
-    }
+		  // ── Toggle constant value input ──────────────────
+		  function toggleConstantField() {
+		    const strategy = document.getElementById('strategy').value;
+		    document.getElementById('constantGroup').style.display =
+		      strategy === 'CONSTANT' ? 'block' : 'none';
+		  }
 
-    // ── Main preprocessing call ─────────────────────────────────
-    function runPreprocessing() {
+		  // ── Toggle sub-input visibility ──────────────────
+		  function toggleSubInput(checkboxId, groupId) {
+		    const checked = document.getElementById(checkboxId).checked;
+		    const group   = document.getElementById(groupId);
+		    if (checked) {
+		      group.classList.add('visible');
+		    } else {
+		      group.classList.remove('visible');
+		    }
+		  }
 
-      const btn         = document.getElementById('runBtn');
-      const statusEl    = document.getElementById('status');
-      const debugLog    = document.getElementById('debugLog');
+		  // ── Parse comma-separated column list ───────────
+		  function parseCols(rawStr) {
+		    return rawStr
+		      .split(',')
+		      .map(s => s.trim())
+		      .filter(s => s.length > 0);
+		  }
 
-      // ── Build request body — missingValueStrategy is ALWAYS set ──
-      const requestBody = {
-        missingValueStrategy : document.getElementById('strategy').value || "MEAN",  // ✅ Never null
-        constantValue        : document.getElementById('constantValue').value || "0",
-        removeDuplicates     : document.getElementById('removeDuplicates').checked,
-        normalizeNumerical   : document.getElementById('normalizeNumerical').checked,
-        encodeCategorical    : document.getElementById('encodeCategorical').checked,
-        inputFilePath        : document.getElementById('inputPath').value.trim()  || "src/main/resources/data/input.xlsx",
-        outputFilePath       : document.getElementById('outputPath').value.trim() || "output/clean_dataset.csv"
-      };
+		  // ── Render Missing Values detail box ────────────
+		  function renderMissingDetail(data) {
+		    const el = document.getElementById('missingDetail');
 
-      // ── Show loading state ──────────────────────────────────────
-      btn.disabled       = true;
-      btn.textContent    = '⏳ Running...';
-      statusEl.className = 'status-badge status-loading';
-      statusEl.textContent = '⏳ Sending request...';
+		    // Backend may return:
+		    //   data.missingValuesFilled  → total count  (Number)
+		    //   data.missingValuesPerColumn → { colName: count } (Object)
+		    //   data.missingValueStrategy   → strategy used (String)
 
-      // ── Log the outgoing request ────────────────────────────────
-      debugLog.textContent = '📤 REQUEST:\n' + JSON.stringify(requestBody, null, 2);
+		    if (!data || data.missingValuesFilled === undefined) {
+		      el.innerHTML = '<span class="no-data">No missing-value data returned.</span>';
+		      return;
+		    }
 
-      // ── Fetch call ──────────────────────────────────────────────
-      fetch('http://localhost:8000/api/preprocess', {
-        method  : 'POST',
-        headers : { 'Content-Type': 'application/json' },  // ✅ Required
-        body    : JSON.stringify(requestBody)               // ✅ Full body with strategy
-      })
-      .then(res => {
-        if (!res.ok) {
-          return res.text().then(errText => {
-            throw new Error(`HTTP ${res.status}: ${errText}`);
-          });
-        }
-        return res.json();
-      })
-      .then(data => {
-        // ── Populate result cards ───────────────────────────────
-        document.getElementById('totalRows').textContent   = data.totalRowsLoaded   ?? '—';
-        document.getElementById('duplicates').textContent  = data.duplicatesRemoved ?? '—';
-        document.getElementById('missing').textContent     = data.missingValuesFilled ?? '—';
-        document.getElementById('outputPathDisplay').textContent = data.outputPath ?? '—';
+		    let html = '';
 
-        // ── Success state ───────────────────────────────────────
-        statusEl.className   = 'status-badge status-success';
-        statusEl.textContent = '✅ Preprocessing Complete!';
+		    // Strategy badge
+		    const strategy = data.missingValueStrategy ?? 'N/A';
+		    html += `<div style="margin-bottom:8px;">
+		               Strategy: <span class="tag blue">${strategy}</span>
+		             </div>`;
 
-        // ── Log the response ────────────────────────────────────
-        debugLog.textContent =
-          '📤 REQUEST:\n'  + JSON.stringify(requestBody, null, 2) +
-          '\n\n📥 RESPONSE:\n' + JSON.stringify(data, null, 2);
-      })
-      .catch(err => {
-        // ── Error state ─────────────────────────────────────────
-        statusEl.className   = 'status-badge status-error';
-        statusEl.textContent = '❌ Error: ' + err.message;
+		    // Per-column breakdown (if provided)
+		    const perCol = data.missingValuesPerColumn;
+		    if (perCol && typeof perCol === 'object' && Object.keys(perCol).length > 0) {
+		      Object.entries(perCol).forEach(([col, count]) => {
+		        html += `<div class="detail-row">
+		                   <span class="col-name">${col}</span>
+		                   <span class="col-val tag blue">${count} filled</span>
+		                 </div>`;
+		      });
+		    } else {
+		      // Fallback: just show total
+		      html += `<div class="detail-row">
+		                 <span class="col-name">Total cells filled</span>
+		                 <span class="col-val tag blue">${data.missingValuesFilled}</span>
+		               </div>`;
+		    }
 
-        debugLog.textContent =
-          '📤 REQUEST:\n'  + JSON.stringify(requestBody, null, 2) +
-          '\n\n❌ ERROR:\n' + err.message;
+		    el.innerHTML = html;
+		  }
 
-        console.error('Preprocessing failed:', err);
-      })
-      .finally(() => {
-        // ── Re-enable button ────────────────────────────────────
-        btn.disabled     = false;
-        btn.textContent  = '▶ Run Preprocessing';
-      });
-    }
+		  // ── Render Duplicates detail box ─────────────────
+		  function renderDuplicatesDetail(data) {
+		    const el = document.getElementById('duplicatesDetail');
 
-  </script>
+		    if (!data || data.duplicatesRemoved === undefined) {
+		      el.innerHTML = '<span class="no-data">No duplicate data returned.</span>';
+		      return;
+		    }
 
-</body>
-</html>
+		    const removed   = data.duplicatesRemoved   ?? 0;
+		    const totalRows = data.totalRowsLoaded      ?? '—';
+		    const remaining = (typeof totalRows === 'number')
+		                        ? totalRows - removed
+		                        : '—';
+
+		    el.innerHTML = `
+		      <div class="detail-row">
+		        <span class="col-name">Rows before cleaning</span>
+		        <span class="col-val">${totalRows}</span>
+		      </div>
+		      <div class="detail-row">
+		        <span class="col-name">Duplicates removed</span>
+		        <span class="col-val tag red">${removed}</span>
+		      </div>
+		      <div class="detail-row">
+		        <span class="col-name">Rows after cleaning</span>
+		        <span class="col-val tag green">${remaining}</span>
+		      </div>
+		    `;
+		  }
+		  // If backend returns [{ columnName: "age" }, { columnName: "salary" }]
+		  // Add this helper at the top of your <script>:
+
+		  function extractColNames(arr) {
+		    if (!arr || arr.length === 0) return [];
+		    // If it's already strings, return as-is
+		    if (typeof arr[0] === 'string') return arr;
+		    // If it's objects, extract the first value found
+		    return arr.map(item => {
+		      return item.columnName || item.name || item.col
+		             || Object.values(item)[0] || String(item);
+		    });
+		  }
+		  // ── Render Categorical Encoding detail box ───────
+		  function renderEncodingDetail(data) {
+		    const el = document.getElementById('encodingDetail');
+
+		    // Backend may return:
+		    //   data.encodedColumns   → ["gender","city"]  (Array)
+		    //   data.encodingType     → "label" | "onehot" (String)
+		    //   data.encodingMap      → { col: { val: num } } (Object, optional)
+
+		    if (!data || !data.encodedColumns || data.encodedColumns.length === 0) {
+		      el.innerHTML = '<span class="no-data">No encoding applied or data not returned.</span>';
+		      return;
+		    }
+
+		    let html = '';
+
+		    // Encoding type badge
+		    const encType = data.encodingType ?? 'label';
+		    const badge   = encType === 'onehot' ? 'One-Hot' : 'Label';
+		    html += `<div style="margin-bottom:8px;">
+		               Type: <span class="tag purple">${badge} Encoding</span>
+		             </div>`;
+
+		    // Encoded columns list
+		    data.encodedColumns.forEach(col => {
+		      html += `<div class="detail-row">
+		                 <span class="col-name">${col}</span>
+		                 <span class="col-val tag purple">encoded ✓</span>
+		               </div>`;
+		    });
+
+		    // Optional encoding map (label → number)
+		    const map = data.encodingMap;
+		    if (map && typeof map === 'object') {
+		      html += `<div style="margin-top:10px;font-size:0.8rem;color:#a0aec0;">
+		                 Mapping preview:
+		               </div>`;
+		      Object.entries(map).forEach(([col, mapping]) => {
+		        const preview = Object.entries(mapping)
+		          .slice(0, 3)
+		          .map(([k, v]) => `${k}→${v}`)
+		          .join(', ');
+		        html += `<div class="detail-row">
+		                   <span class="col-name">${col}</span>
+		                   <span class="col-val" style="font-size:0.78rem;color:#553c9a;">
+		                     ${preview}${Object.keys(mapping).length > 3 ? ' ...' : ''}
+		                   </span>
+		                 </div>`;
+		      });
+		    }
+
+		    el.innerHTML = html;
+		  }
+
+		  // ── Render Normalization detail box ──────────────
+		  function renderNormalizationDetail(data) {
+		    const el = document.getElementById('normalizationDetail');
+
+		    // Backend may return:
+		    //   data.normalizedColumns → ["age","salary"] (Array)
+		    //   data.normalizationType → "minmax"|"zscore" (String)
+		    //   data.normalizationStats → { col: { min, max } | { mean, std } } (Object, optional)
+
+		    if (!data || !data.normalizedColumns || data.normalizedColumns.length === 0) {
+		      el.innerHTML = '<span class="no-data">No normalization applied or data not returned.</span>';
+		      return;
+		    }
+
+		    let html = '';
+
+		    // Normalization type badge
+		    const normType = data.normalizationType ?? 'minmax';
+		    const badge    = normType === 'zscore' ? 'Z-Score' : 'Min-Max';
+		    html += `<div style="margin-bottom:8px;">
+		               Method: <span class="tag green">${badge} Scaling</span>
+		             </div>`;
+
+		    // Normalized columns
+		    data.normalizedColumns.forEach(col => {
+		      html += `<div class="detail-row">
+		                 <span class="col-name">${col}</span>
+		                 <span class="col-val tag green">normalized ✓</span>
+		               </div>`;
+		    });
+
+		    // Optional stats (min/max or mean/std)
+		    const stats = data.normalizationStats;
+		    if (stats && typeof stats === 'object') {
+		      html += `<div style="margin-top:10px;font-size:0.8rem;color:#a0aec0;">
+		                 Column stats:
+		               </div>`;
+		      Object.entries(stats).forEach(([col, s]) => {
+		        let statStr = '';
+		        if (s.min !== undefined && s.max !== undefined) {
+		          statStr = `min: ${Number(s.min).toFixed(2)}, max: ${Number(s.max).toFixed(2)}`;
+		        } else if (s.mean !== undefined && s.std !== undefined) {
+		          statStr = `μ: ${Number(s.mean).toFixed(2)}, σ: ${Number(s.std).toFixed(2)}`;
+		        }
+		        if (statStr) {
+		          html += `<div class="detail-row">
+		                     <span class="col-name">${col}</span>
+		                     <span class="col-val" style="font-size:0.78rem;color:#276749;">
+		                       ${statStr}
+		                     </span>
+		                   </div>`;
+		        }
+		      });
+		    }
+
+		    el.innerHTML = html;
+		  }
+
+		  // ── Reset all result panels ───────────────────────
+		  function resetResults() {
+		    ['missingDetail','duplicatesDetail','encodingDetail','normalizationDetail']
+		      .forEach(id => {
+		        document.getElementById(id).innerHTML =
+		          '<span class="no-data">Run preprocessing to see results.</span>';
+		      });
+		    document.getElementById('totalRows').textContent    = '—';
+		    document.getElementById('duplicatesCard').textContent = '—';
+		    document.getElementById('missingCard').textContent  = '—';
+		    document.getElementById('outputPathDisplay').textContent = '—';
+		  }
+
+		  // ── Main preprocessing call ───────────────────────
+		  function runPreprocessing() {
+
+		    const btn      = document.getElementById('runBtn');
+		    const statusEl = document.getElementById('status');
+		    const debugLog = document.getElementById('debugLog');
+
+		    // ── Build request body ──────────────────────────
+		    const doNormalize = document.getElementById('normalizeNumerical').checked;
+		    const doEncode    = document.getElementById('encodeCategorical').checked;
+
+		    const requestBody = {
+		      missingValueStrategy : document.getElementById('strategy').value || 'MEAN',
+		      constantValue        : document.getElementById('constantValue').value || '0',
+		      removeDuplicates     : document.getElementById('removeDuplicates').checked,
+		      normalizeNumerical   : doNormalize,
+		      encodeCategorical    : doEncode,
+		      normalizationType    : document.getElementById('normalizationType').value,
+		      encodingType         : document.getElementById('encodingType').value,
+
+		      // ✅ Send column arrays (empty array if step is disabled)
+		      numericalColumns : doNormalize
+		        ? parseCols(document.getElementById('numericalColumns').value)
+		        : [],
+		      categoricalColumns : doEncode
+		        ? parseCols(document.getElementById('categoricalColumns').value)
+		        : [],
+
+		      inputFilePath  : document.getElementById('inputPath').value.trim()
+		                        || 'src/main/resources/input.xlsx',
+		      outputFilePath : document.getElementById('outputPath').value.trim()
+		                        || 'src/main/resources/output.xlsx'
+		    };
+
+		    // ── Loading state ───────────────────────────────
+		    btn.disabled         = true;
+		    btn.textContent      = '⏳ Running...';
+		    statusEl.className   = 'status-badge status-loading';
+		    statusEl.textContent = '⏳ Sending request to backend...';
+		    resetResults();
+
+		    debugLog.textContent = '📤 REQUEST:\n' + JSON.stringify(requestBody, null, 2);
+
+		    // ── Fetch ───────────────────────────────────────
+		    fetch('http://localhost:8000/api/preprocess', {
+		      method  : 'POST',
+		      headers : { 'Content-Type': 'application/json' },
+		      body    : JSON.stringify(requestBody)
+		    })
+		    .then(res => {
+		      if (!res.ok) {
+		        return res.text().then(errText => {
+		          throw new Error(`HTTP ${res.status}: ${errText}`);
+		        });
+		      }
+		      return res.json();
+		    })
+			.then(data => {
+
+			  document.getElementById('totalRows').textContent      = data.totalRowsLoaded     ?? '—';
+			  document.getElementById('duplicatesCard').textContent = data.duplicatesRemoved   ?? '—';
+			  document.getElementById('missingCard').textContent    = data.missingValuesFilled ?? '—';
+			  document.getElementById('outputPathDisplay').textContent = data.outputPath       ?? '—';
+
+			  renderMissingDetail(data);
+			  renderDuplicatesDetail(data);
+			  renderEncodingDetail(data);
+			  renderNormalizationDetail(data);
+
+			  statusEl.className   = 'status-badge status-success';   // ✅ Same level
+			  statusEl.textContent = '✅ Preprocessing Complete!';
+
+			  debugLog.textContent =
+			    '📤 REQUEST:\n'     + JSON.stringify(requestBody, null, 2) +
+			    '\n\n📥 RESPONSE:\n' + JSON.stringify(data, null, 2);
+
+			})
+			.catch(err => {
+			  statusEl.className   = 'status-badge status-error';
+			  statusEl.textContent = '❌ Error: ' + err.message;
+
+			  debugLog.textContent =
+			    '📤 REQUEST:\n'  + JSON.stringify(requestBody, null, 2) +
+			    '\n\n❌ ERROR:\n' + err.message;
+			})
+			.finally(() => {
+			  btn.disabled    = false;
+			  btn.textContent = '▶ Run Preprocessing';
+			});
+
+			} // ← closes runPreprocessing()
+
+			    </script>
+			  </body>
+			  </html>
+			  

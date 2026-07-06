@@ -1,6 +1,5 @@
 package kumaranai.dto;
 
-//src/main/java/com/datapreprocessing/dto/PreprocessingConfigDTO.java
 
 import java.util.List;
 
@@ -21,8 +20,7 @@ public class PreprocessingConfigDTO {
 	private List<String> numericColumns;
 	private List<String> categoricalColumns;
 	private boolean removeDuplicates;
-	private MissingValueHandler.Strategy missingValueStrategy; // ✅ Enum type
-	// ─── Constructors ───────────────────────────────────────────
+	private MissingValueHandler.Strategy missingValueStrategy; 
 
 	public PreprocessingConfigDTO() {
 	}
@@ -39,8 +37,7 @@ public class PreprocessingConfigDTO {
 		this.missingValueStrategy = missingValueStrategy;
 	}
 
-	// ─── toString (for logging/debugging) ───────────────────────
-
+	// ─── toString (for logging/debugging) ─
 	@Override
 	public String toString() {
 		return "PreprocessingConfigDTO{" + "inputFilePath='" + inputFilePath + '\'' + ", outputFilePath='"

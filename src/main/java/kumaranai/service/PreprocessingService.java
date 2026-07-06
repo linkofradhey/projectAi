@@ -1,88 +1,3 @@
-//package service;
-//
-////service/PreprocessingService.java
-//package com.datapreprocessing.service;
-//
-//import java.util.List;
-//
-//import org.springframework.stereotype.Service;
-//
-//import PreProcessing.DuplicateRemover;
-//import PreProcessing.MissingValueHandler;
-//import PreProcessing.NumericalNormalizer;
-//import dto.PreprocessingConfigDTO;
-//import dto.PreprocessingResultDTO;
-//import io.DataLoader;
-//import io.DataWriter;
-//import model.DataRecord;
-//import smile.data.CategoricalEncoder;
-//
-//@Service
-//public class PreprocessingService {
-//
-// private final DataLoader dataLoader;
-// private final DataWriter dataWriter;
-// private final MissingValueHandler missingValueHandler;
-// private final DuplicateRemover duplicateRemover;
-// private final CategoricalEncoder categoricalEncoder;
-// private final NumericalNormalizer numericalNormalizer;
-//
-// // Constructor Injection (best practice)
-// public PreprocessingService(
-//         DataLoader dataLoader,
-//         DataWriter dataWriter,
-//         MissingValueHandler missingValueHandler,
-//         DuplicateRemover duplicateRemover,
-//         CategoricalEncoder categoricalEncoder,
-//         NumericalNormalizer numericalNormalizer) {
-//
-//     this.dataLoader         = dataLoader;
-//     this.dataWriter         = dataWriter;
-//     this.missingValueHandler = missingValueHandler;
-//     this.duplicateRemover   = duplicateRemover;
-//     this.categoricalEncoder = categoricalEncoder;
-//     this.numericalNormalizer = numericalNormalizer;
-// }
-//
-// public PreprocessingResultDTO process(PreprocessingConfigDTO config) {
-//
-//     // --- STEP 1: Load raw data ---
-//     List<DataRecord> records = dataLoader.load(config.getInputFilePath());
-//     int totalLoaded = records.size();
-//
-//     // --- STEP 2: Handle missing values ---
-//     i missingFilled = missingValueHandler.handle(records, config.getMissingValueStrategy().name);
-//
-//     // --- STEP 3: Remove duplicates (if configured) ---
-//     int duplicatesRemoved = 0;
-//     if (config.isRemoveDuplicates()) {
-//         duplicatesRemoved = duplicateRemover.remove(records);
-//     }
-//
-//     // --- STEP 4: Encode categorical columns ---
-//     categoricalEncoder.encode(records, config.getCategoricalColumns());
-//
-//     // --- STEP 5: Normalize numeric columns ---
-//     numericalNormalizer.normalize(records, config.getNumericColumns());
-//
-//     // --- STEP 6: Write cleaned data to output ---
-//     dataWriter.write(records, config.getOutputFilePath());
-//
-//     // --- STEP 7: Build and return result ---
-//     PreprocessingResultDTO result = new PreprocessingResultDTO();
-//     result.setTotalRowsLoaded(totalLoaded);
-//     result.setDuplicatesRemoved(duplicatesRemoved);
-//     result.setMissingValuesFilled(missingFilled);
-//     result.setTotalRowsAfterCleaning(records.size());
-//     result.setOutputPath(config.getOutputFilePath());
-//     result.setStatus("SUCCESS");
-//     result.setMessage("Preprocessing completed successfully.");
-//
-//     return result;
-// }
-//}
-
-// service/PreprocessingService.java
 package kumaranai.service;
 
 import java.io.IOException;
@@ -113,7 +28,7 @@ public class PreprocessingService {
 
 	public PreprocessingService(DataLoader dataLoader, DataWriter dataWriter, MissingValueHandler missingValueHandler,
 			DuplicateRemover duplicateRemover, CategoricalEncoder categoricalEncoder,
-			NumericalNormalizer numericalNormalizer) {
+			NumericalNormalizer numericalNormalizer) {//constructor to intialize the value of the tools 
 
 		this.dataLoader = dataLoader;
 		this.dataWriter = dataWriter;
@@ -130,7 +45,7 @@ public class PreprocessingService {
 			int totalLoaded = records.size();
 
 			// STEP 2: Handle missing values ✅ int type + Enum arg
-			int missingFilled = missingValueHandler.handle(records, config.getMissingValueStrategy());//config.getMissingValueStrategy()
+			int missingFilled = missingValueHandler.handle(records, config.getMissingValueStrategy());
 
 			// STEP 3: Remove duplicates
 			List<DataRecord> duplicatesRemoved = null;

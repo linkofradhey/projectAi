@@ -1,4 +1,3 @@
-// io/DataLoader.java
 package kumaranai.io;
 
 import java.io.File;
@@ -25,18 +24,17 @@ public class DataLoader {
         if (filePath.endsWith(".xlsx") || filePath.endsWith(".xls")) {
             return loadFromExcel(filePath);
         } else {
-            return loadFromCsv(filePath); // existing CSV logic
+            return loadFromCsv(filePath); 
         }
     }
 
-    // ─── Excel Reader ─────────────────────────────────────────
     private List<DataRecord> loadFromExcel(String filePath) {
         List<DataRecord> records = new ArrayList<>();
 
         try (FileInputStream fis = new FileInputStream(new File(filePath));
              Workbook workbook = new XSSFWorkbook(fis)) {
 
-            Sheet sheet = workbook.getSheetAt(0); // Read first sheet
+            Sheet sheet = workbook.getSheetAt(0); 
             Iterator<Row> rowIterator = sheet.iterator();
 
             // First row = headers

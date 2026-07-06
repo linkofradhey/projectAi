@@ -9,24 +9,8 @@ import java.io.*;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Writes DataRecord objects (HashMap-based) to CSV or XLSX.
- * Fully dynamic — no hardcoded column names.
- * DataLoader and DataRecord are completely untouched.
- */
 @Component
 public class DataWriter {
-
-    // ────────────────────────────────────────────────────────────
-    //  PUBLIC ENTRY POINT
-    // ────────────────────────────────────────────────────────────
-
-    /**
-     * Auto-detects output format from file extension (.csv or .xlsx).
-     *
-     * @param records    List of DataRecord objects from preprocessing
-     * @param outputPath Full output file path
-     */
     public void write(List<DataRecord> records, String outputPath) throws IOException {
 
         if (records == null || records.isEmpty()) {
@@ -34,7 +18,6 @@ public class DataWriter {
             return;
         }
 
-        // ✅ Ensure output directory exists
         File outputFile = new File(outputPath);
         if (outputFile.getParentFile() != null) {
             outputFile.getParentFile().mkdirs();
@@ -57,14 +40,9 @@ public class DataWriter {
         }
     }
 
-    // ────────────────────────────────────────────────────────────
-    //  XLSX WRITER
-    // ────────────────────────────────────────────────────────────
-
+    
     private void writeXlsx(List<DataRecord> records, File outputFile) throws IOException {
 
-        // ✅ Extract headers from the first record's field keys
-        // LinkedHashMap in DataRecord preserves insertion order
         Map<String, String> firstFields = records.get(0).getFields();
         String[] headers = firstFields.keySet().toArray(new String[0]);
 
@@ -88,18 +66,18 @@ public class DataWriter {
                 Row row = sheet.createRow(rowIdx++);
                 int colIdx = 0;
                 for (String header : headers) {
-                    // ✅ Uses DataRecord's own getField() helper
+                    //  Uses DataRecord's own getField() helper
                     String value = record.getField(header);
                     row.createCell(colIdx++).setCellValue(safeValue(value));
                 }
             }
 
-            // ✅ Auto-size all columns
+            //  Auto-size all columns
             for (int i = 0; i < headers.length; i++) {
                 sheet.autoSizeColumn(i);
             }
 
-            // ✅ Flush and write — prevents corrupt file
+            //  Flush and write — prevents corrupt file
             workbook.write(fos);
             fos.flush();
 
@@ -113,35 +91,28 @@ public class DataWriter {
         }
     }
 
-    // ────────────────────────────────────────────────────────────
-    //  CSV WRITER
-    // ────────────────────────────────────────────────────────────
 
     private void writeCsv(List<DataRecord> records, File outputFile) throws IOException {
 
-        // ✅ Extract headers from the first record's field keys
         Map<String, String> firstFields = records.get(0).getFields();
         String[] headers = firstFields.keySet().toArray(new String[0]);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
 
-            // ── Header line ──────────────────────────────────────
-            writer.write(String.join(",", headers));
+            writer.write(String.join(",", headers));//every thing will be in single line
             writer.newLine();
 
-            // ── Data lines ───────────────────────────────────────
             for (DataRecord record : records) {
                 StringBuilder line = new StringBuilder();
                 for (int i = 0; i < headers.length; i++) {
                     if (i > 0) line.append(",");
-                    // ✅ Uses DataRecord's own getField() helper
                     line.append(escapeCsv(record.getField(headers[i])));
                 }
                 writer.write(line.toString());
                 writer.newLine();
             }
 
-            writer.flush();
+            writer.flush(); // very important because it will help to close the file and save it
 
             System.out.println("[DataWriter] ✅ CSV written → "
                 + outputFile.getAbsolutePath()
@@ -153,10 +124,7 @@ public class DataWriter {
         }
     }
 
-    // ────────────────────────────────────────────────────────────
-    //  HELPERS
-    // ────────────────────────────────────────────────────────────
-
+   
     /** Bold + blue header style for XLSX */
     private CellStyle buildHeaderStyle(Workbook workbook) {
         CellStyle style = workbook.createCellStyle();

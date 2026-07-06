@@ -10,7 +10,6 @@ import kumaranai.dto.PreprocessingConfigDTO;
 import kumaranai.dto.PreprocessingResultDTO;
 import kumaranai.service.PreprocessingService;
 
-//controller/PreprocessingController.java
 @RestController
 @RequestMapping("/api")
 public class PreprocessingController {
