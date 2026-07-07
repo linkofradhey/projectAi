@@ -90,7 +90,6 @@ public class CategoricalEncoder {
 
 	    for (String column : categoricalColumns) {
 
-	        // ✅ Special case: age → bucket label encoding
 	        if (column.equals("age")) {
 	            for (DataRecord record : records) {
 	                Object raw = record.getField(column);
@@ -112,10 +111,9 @@ public class CategoricalEncoder {
 	                }
 	            }
 	            System.out.println("[CategoricalEncoder] LABEL | Column 'age' → bucket labels {<25=0, 25-34=1, 35-44=2, ≥45=3}");
-	            continue; // ← skip generic label logic for this column
+	            continue; 
 	        }
 
-	        // ── Generic label encoding logic (unchanged) ───────────
 	        Map<String, Integer> labelMap = buildLabelMap(records, column);
 	        encodingRegistry.put(column, labelMap);
 
@@ -137,7 +135,6 @@ public class CategoricalEncoder {
 
 	    for (String column : categoricalColumns) {
 
-	        // ✅ Special case: performance_score → boolean true/false
 	        if (column.equals("performance_score")) {
 	            for (DataRecord record : records) {
 	                Object raw = record.getField(column);
@@ -148,10 +145,9 @@ public class CategoricalEncoder {
 	                }
 	            }
 	            System.out.println("[CategoricalEncoder] ONE_HOT | Column 'performance_score' → threshold 70.0 (true/false)");
-	            continue; // ← skip generic one-hot logic for this column
+	            continue; 
 	        }
 
-	        // ── Generic one-hot logic (unchanged) ──────────────────
 	        List<String> uniqueValues = records.stream()
 	                .map(r -> r.getField(column))
 	                .filter(v -> v != null && !v.trim().isEmpty())

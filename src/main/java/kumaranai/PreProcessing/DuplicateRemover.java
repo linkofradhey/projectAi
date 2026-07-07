@@ -15,12 +15,12 @@ import kumaranai.model.DataRecord;
 public class DuplicateRemover {
 
  public enum KeepStrategy {
-     FIRST,  // Keep the first occurrence of a duplicate
-     LAST    // Keep the last occurrence of a duplicate
+     FIRST,  
+     LAST    
  }
 
  private final KeepStrategy keepStrategy;
- private final List<String> subsetColumns; // If set, duplicates are checked only on these columns
+ private final List<String> subsetColumns; 
 
 
  public DuplicateRemover() {
@@ -61,7 +61,6 @@ public class DuplicateRemover {
          }
      }
 
-     // Reverse back if LAST strategy was used
      if (keepStrategy == KeepStrategy.LAST) {
          Collections.reverse(unique);
      }
@@ -75,12 +74,10 @@ public class DuplicateRemover {
      return unique;
  }
 
- // ─── Utility Helpers ─────────────────────────────────────────
 
  
  private String buildKey(DataRecord record) {
      if (subsetColumns == null || subsetColumns.isEmpty()) {
-         // Use all fields for comparison
          return record.getFields().toString();
      }
 
