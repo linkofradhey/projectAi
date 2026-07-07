@@ -1,244 +1,3 @@
-//package PreProcessing;
-//
-////src/main/java/com/datapreprocessing/handler/MissingValueHandler.java
-//
-//import java.util.ArrayList;
-//import java.util.Collections;
-//import java.util.Iterator;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.stream.Collectors;
-//
-//import dto.MissingValueStrategy;
-//import model.DataRecord;
-//
-//public class MissingValueHandler {
-//
-// // ─── Strategy Enum ───────────────────────────────────────────
-// public enum Strategy {
-//     MEAN,       // Fill with column mean    (numeric columns)
-//     MEDIAN,     // Fill with column median  (numeric columns)
-//     MODE,       // Fill with most frequent value (categorical columns)
-//     CONSTANT,   // Fill with a fixed value
-//     REMOVE      // Remove rows with missing values
-// }
-//
-//
-// private final Strategy strategy;
-// private final String   constantValue; // used only when strategy = CONSTANT
-//
-// // ─── Constructors ────────────────────────────────────────────
-//
-// public MissingValueHandler() {
-//     this.strategy      = Strategy.MEAN;
-//     this.constantValue = "0";
-// }
-//
-// public MissingValueHandler(Strategy strategy) {
-//     this.strategy      = strategy;
-//     this.constantValue = "0";
-// }
-//
-// public MissingValueHandler(Strategy strategy, String constantValue) {
-//     this.strategy      = strategy;
-//     this.constantValue = constantValue;
-// }
-//
-// // ─── Main Entry Point ────────────────────────────────────────
-//
-// /**
-//  * Handles missing values across all records based on the chosen strategy.
-//  *
-//  * @param records List of DataRecord objects
-//  * @return Cleaned list of DataRecord objects
-//  */
-// public int handle(List<DataRecord> records, MissingValueStrategy strategy) {
-//     int count = 0;
-//
-//     switch (strategy) {
-//         case MEAN:
-//             count = applyMeanImputation(records);
-//             break;
-//         case MEDIAN:
-//             count = applyMedianImputation(records);
-//             break;
-//         case MODE:
-//             count = applyModeImputation(records);
-//             break;
-//         case CONSTANT:
-//             count = applyConstantFill(records);
-//             break;
-//         case DROP:
-//             count = dropRowsWithMissing(records);
-//             break;
-//         default:
-//             throw new IllegalArgumentException("Unknown strategy: " + strategy);
-//     }
-//
-//     return count;
-// }
-//
-// private int applyMeanImputation(List<DataRecord> records) {
-//     // TODO: implement mean imputation logic
-//     return 0;
-// }
-//
-// private int applyMedianImputation(List<DataRecord> records) {
-//     // TODO: implement median imputation logic
-//     return 0;
-// }
-//
-// private int applyModeImputation(List<DataRecord> records) {
-//     // TODO: implement mode imputation logic
-//     return 0;
-// }
-//
-// private int applyConstantFill(List<DataRecord> records) {
-//     // TODO: implement constant fill logic
-//     return 0;
-// }
-//
-// private int dropRowsWithMissing(List<DataRecord> records) {
-//     int before = records.size();
-//     Iterator<DataRecord> iterator = records.iterator();
-//     while (iterator.hasNext()) {
-//         DataRecord record = iterator.next();
-//         if (record.hasMissingValues()) {
-//             iterator.remove();
-//         }
-//     }
-//     return before - records.size();
-// }
-// // ─── Strategy Implementations ────────────────────────────────
-//
-// /**
-//  * Computes the fill value for a column based on the selected strategy.
-//  */
-// private String computeFillValue(List<DataRecord> records, String column) {
-//     switch (strategy) {
-//         case MEAN:
-//             return isNumericColumn(records, column)
-//                     ? String.valueOf(computeMean(records, column))
-//                     : computeMode(records, column);
-//
-//         case MEDIAN:
-//             return isNumericColumn(records, column)
-//                     ? String.valueOf(computeMedian(records, column))
-//                     : computeMode(records, column);
-//
-//         case MODE:
-//             return computeMode(records, column);
-//
-//         case CONSTANT:
-//             return constantValue;
-//
-//         default:
-//             return "unknown";
-//     }
-// }
-//
-// /**
-//  * Computes the MEAN of a numeric column (ignores missing values).
-//  */
-// private double computeMean(List<DataRecord> records, String column) {
-//     List<Double> values = getNumericValues(records, column);
-//     if (values.isEmpty()) return 0.0;
-//
-//     double sum = values.stream().mapToDouble(Double::doubleValue).sum();
-//     double mean = sum / values.size();
-//
-//     // Round to 2 decimal places
-//     return Math.round(mean * 100.0) / 100.0;
-// }
-//
-// /**
-//  * Computes the MEDIAN of a numeric column (ignores missing values).
-//  */
-// private double computeMedian(List<DataRecord> records, String column) {
-//     List<Double> values = getNumericValues(records, column);
-//     if (values.isEmpty()) return 0.0;
-//
-//     Collections.sort(values);
-//     int size = values.size();
-//
-//     if (size % 2 == 0) {
-//         return (values.get(size / 2 - 1) + values.get(size / 2)) / 2.0;
-//     } else {
-//         return values.get(size / 2);
-//     }
-// }
-//
-// /**
-//  * Computes the MODE (most frequent value) of a column (ignores missing values).
-//  */
-// private String computeMode(List<DataRecord> records, String column) {
-//     Map<String, Long> frequency = records.stream()
-//             .filter(r -> !r.isMissing(column))
-//             .collect(Collectors.groupingBy(
-//                     r -> r.getField(column),
-//                     Collectors.counting()
-//             ));
-//
-//     return frequency.entrySet().stream()
-//             .max(Map.Entry.comparingByValue())
-//             .map(Map.Entry::getKey)
-//             .orElse("unknown");
-// }
-//
-// /**
-//  * Removes all records that have at least one missing value.
-//  */
-// private List<DataRecord> removeRowsWithMissingValues(List<DataRecord> records) {
-//     List<String> columns = new ArrayList<>(records.get(0).getFields().keySet());
-//
-//     List<DataRecord> cleaned = records.stream()
-//             .filter(record -> columns.stream().noneMatch(record::isMissing))
-//             .collect(Collectors.toList());
-//
-//     int removed = records.size() - cleaned.size();
-//     System.out.println("[MissingValueHandler] Removed " + removed + " rows with missing values.");
-//
-//     return cleaned;
-// }
-//
-// // ─── Utility Helpers ─────────────────────────────────────────
-//
-// /**
-//  * Checks if a column contains numeric values.
-//  */
-// private boolean isNumericColumn(List<DataRecord> records, String column) {
-//     for (DataRecord record : records) {
-//         String value = record.getField(column);
-//         if (value != null && !value.trim().isEmpty()) {
-//             try {
-//                 Double.parseDouble(value.trim());
-//                 return true;
-//             } catch (NumberFormatException e) {
-//                 return false;
-//             }
-//         }
-//     }
-//     return false;
-// }
-//
-// /**
-//  * Extracts all non-missing numeric values from a column.
-//  */
-// private List<Double> getNumericValues(List<DataRecord> records, String column) {
-//     List<Double> values = new ArrayList<>();
-//     for (DataRecord record : records) {
-//         String value = record.getField(column);
-//         if (value != null && !value.trim().isEmpty()) {
-//             try {o
-//                 values.add(Double.parseDouble(value.trim()));
-//             } catch (NumberFormatException ignored) {}
-//         }
-//     }
-//     return values;
-// }
-//}
-
-
 package kumaranai.PreProcessing;
 
 import java.util.ArrayList;
@@ -251,8 +10,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import kumaranai.model.DataRecord;
-@Component
 
+@Component
 public class MissingValueHandler {
 
     // ─── Strategy Enum ───────────────────────────────────────────
@@ -264,12 +23,17 @@ public class MissingValueHandler {
         REMOVE
     }
 
-    private  Strategy strategy;
+    private Strategy strategy;
     private final String constantValue;
 
+    // ─── Constructors ─────────────────────────────────────────────
+
+    // FIX #6: Default constructor now initializes strategy to avoid null
     public MissingValueHandler() {
-		this.constantValue = "";
+        this.strategy = Strategy.CONSTANT;
+        this.constantValue = "";
     }
+
     public MissingValueHandler(Strategy strategy) {
         this(strategy, "0");
     }
@@ -279,7 +43,17 @@ public class MissingValueHandler {
         this.constantValue = constantValue;
     }
 
+    // ─── Public Entry Point ───────────────────────────────────────
+
+    /**
+     * Apply the chosen missing-value strategy to the list of records.
+     * @param records  list of DataRecord objects
+     * @param strategy chosen imputation/removal strategy
+     * @return number of cells filled (or rows removed for REMOVE strategy)
+     */
     public int handle(List<DataRecord> records, Strategy strategy) {
+        this.strategy = strategy;
+
         switch (strategy) {
             case MEAN:
                 return applyMeanImputation(records);
@@ -292,22 +66,33 @@ public class MissingValueHandler {
             case REMOVE:
                 return dropRowsWithMissing(records);
             default:
-                throw new IllegalArgumentException("Unknown strategy");
+                throw new IllegalArgumentException("Unknown strategy: " + strategy);
         }
     }
 
+    // ─── Strategy Implementations ─────────────────────────────────
 
+    /**
+     * MEAN: Fill missing numeric cells with the column mean.
+     * Non-numeric columns are skipped.
+     */
     private int applyMeanImputation(List<DataRecord> records) {
         int count = 0;
         List<String> columns = getColumns(records);
+        if (columns.isEmpty()) return 0;
 
         for (String col : columns) {
             if (!isNumericColumn(records, col)) continue;
 
-            String fillValue = String.valueOf(computeMean(records, col));
+            // FIX #3: Compute values once, pass list directly
+            List<Double> values = getNumericValues(records, col);
+            if (values.isEmpty()) continue;
+
+            String fillValue = String.valueOf(computeMean(values));
 
             for (DataRecord r : records) {
-                if (r.isMissing(col)) {
+                // FIX #1: Use local isMissing() instead of r.isMissing()
+                if (isMissing(r, col)) {
                     r.setField(col, fillValue);
                     count++;
                 }
@@ -316,17 +101,27 @@ public class MissingValueHandler {
         return count;
     }
 
+    /**
+     * MEDIAN: Fill missing numeric cells with the column median.
+     * Non-numeric columns are skipped.
+     */
     private int applyMedianImputation(List<DataRecord> records) {
         int count = 0;
         List<String> columns = getColumns(records);
+        if (columns.isEmpty()) return 0;
 
         for (String col : columns) {
             if (!isNumericColumn(records, col)) continue;
 
-            String fillValue = String.valueOf(computeMedian(records, col));
+            // FIX #3: Compute values once, pass list directly
+            List<Double> values = getNumericValues(records, col);
+            if (values.isEmpty()) continue;
+
+            String fillValue = String.valueOf(computeMedian(values));
 
             for (DataRecord r : records) {
-                if (r.isMissing(col)) {
+                // FIX #1: Use local isMissing() instead of r.isMissing()
+                if (isMissing(r, col)) {
                     r.setField(col, fillValue);
                     count++;
                 }
@@ -335,15 +130,20 @@ public class MissingValueHandler {
         return count;
     }
 
+    /**
+     * MODE: Fill missing cells (any column) with the most frequent value.
+     */
     private int applyModeImputation(List<DataRecord> records) {
         int count = 0;
         List<String> columns = getColumns(records);
+        if (columns.isEmpty()) return 0;
 
         for (String col : columns) {
             String fillValue = computeMode(records, col);
 
             for (DataRecord r : records) {
-                if (r.isMissing(col)) {
+                // FIX #1: Use local isMissing() instead of r.isMissing()
+                if (isMissing(r, col)) {
                     r.setField(col, fillValue);
                     count++;
                 }
@@ -352,13 +152,18 @@ public class MissingValueHandler {
         return count;
     }
 
+    /**
+     * CONSTANT: Fill all missing cells with the configured constant value.
+     */
     private int applyConstantFill(List<DataRecord> records) {
         int count = 0;
         List<String> columns = getColumns(records);
+        if (columns.isEmpty()) return 0;
 
         for (DataRecord r : records) {
             for (String col : columns) {
-                if (r.isMissing(col)) {
+                // FIX #1: Use local isMissing() instead of r.isMissing()
+                if (isMissing(r, col)) {
                     r.setField(col, constantValue);
                     count++;
                 }
@@ -367,12 +172,22 @@ public class MissingValueHandler {
         return count;
     }
 
+    /**
+     * REMOVE: Drop any row that has at least one missing value.
+     * FIX #2: Replaced wrong toString()=="0" with proper per-field missing check.
+     */
     private int dropRowsWithMissing(List<DataRecord> records) {
         int before = records.size();
+        if (before == 0) return 0;
+
+        List<String> columns = getColumns(records);
+        if (columns.isEmpty()) return 0;
 
         Iterator<DataRecord> it = records.iterator();
         while (it.hasNext()) {
-            if (it.next().toString()=="0" ) {//doubt
+            DataRecord r = it.next();
+            boolean hasMissing = columns.stream().anyMatch(col -> isMissing(r, col));
+            if (hasMissing) {
                 it.remove();
             }
         }
@@ -380,23 +195,83 @@ public class MissingValueHandler {
         return before - records.size();
     }
 
-    // ─── Helper Methods ──────────────────────────────────────────
+    // ─── Helper Methods ───────────────────────────────────────────
 
+    /**
+     * FIX #5: Get column names safely — returns empty list if records is null/empty.
+     */
     private List<String> getColumns(List<DataRecord> records) {
+        if (records == null || records.isEmpty()) return new ArrayList<>();
         return new ArrayList<>(records.get(0).getFields().keySet());
     }
 
-    private double computeMean(List<DataRecord> records, String column) {
-        List<Double> values = getNumericValues(records, column);
-        if (values.isEmpty()) return 0.0;
+    /**
+     * FIX #1: Local missing check — null, empty, or whitespace-only = missing.
+     */
+    private boolean isMissing(DataRecord record, String column) {
+        if (record == null || column == null) return true;
+        String val = record.getField(column);
+        return val == null || val.trim().isEmpty();
+    }
 
+    /**
+     * Strict numeric column check:
+     * All non-missing values in the column must parse as Double.
+     */
+    private boolean isNumericColumn(List<DataRecord> records, String column) {
+        int numericCount = 0;
+        int totalNonMissing = 0;
+
+        for (DataRecord r : records) {
+            String val = r.getField(column);
+            if (val != null && !val.trim().isEmpty()) {
+                totalNonMissing++;
+                try {
+                    Double.parseDouble(val.trim());
+                    numericCount++;
+                } catch (NumberFormatException ignored) {
+                    // non-numeric value found
+                }
+            }
+        }
+
+        return totalNonMissing > 0 && numericCount == totalNonMissing;
+    }
+
+    /**
+     * Collect all non-missing numeric values from a column.
+     */
+    private List<Double> getNumericValues(List<DataRecord> records, String column) {
+        List<Double> list = new ArrayList<>();
+
+        for (DataRecord r : records) {
+            String val = r.getField(column);
+            if (val != null && !val.trim().isEmpty()) {
+                try {
+                    list.add(Double.parseDouble(val.trim()));
+                } catch (NumberFormatException ignored) {
+                    // skip non-parseable values
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * FIX #3: Compute mean from a pre-collected list of doubles.
+     * Rounded to 2 decimal places.
+     */
+    private double computeMean(List<Double> values) {
+        if (values == null || values.isEmpty()) return 0.0;
         double sum = values.stream().mapToDouble(Double::doubleValue).sum();
         return Math.round((sum / values.size()) * 100.0) / 100.0;
     }
 
-    private double computeMedian(List<DataRecord> records, String column) {
-        List<Double> values = getNumericValues(records, column);
-        if (values.isEmpty()) return 0.0;
+    /**
+     * FIX #3: Compute median from a pre-collected list of doubles.
+     */
+    private double computeMedian(List<Double> values) {
+        if (values == null || values.isEmpty()) return 0.0;
 
         Collections.sort(values);
         int n = values.size();
@@ -406,50 +281,18 @@ public class MissingValueHandler {
                 : values.get(n / 2);
     }
 
+    /**
+     * FIX #4: Compute mode by streaming field values directly (not DataRecord objects).
+     */
     private String computeMode(List<DataRecord> records, String column) {
         Map<String, Long> freq = records.stream()
-                .filter(r -> !r.isMissing(column))
-                .collect(Collectors.groupingBy(
-                        r -> r.getField(column),
-                        Collectors.counting()
-                ));
+                .map(r -> r.getField(column))
+                .filter(v -> v != null && !v.trim().isEmpty())
+                .collect(Collectors.groupingBy(v -> v, Collectors.counting()));
 
         return freq.entrySet().stream()
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
                 .orElse(constantValue);
     }
-
-    private boolean isNumericColumn(List<DataRecord> records, String column) {
-        int numericCount = 0, total = 0;
-
-        for (DataRecord r : records) {
-            String val = r.getField(column);
-            if (val != null && !val.trim().isEmpty()) {
-                total++;
-                try {
-                    Double.parseDouble(val);
-                    numericCount++;
-                } catch (Exception ignored) {}
-            }
-        }
-
-        return total > 0 && numericCount == total; // strict check
-    }
-
-    private List<Double> getNumericValues(List<DataRecord> records, String column) {
-        List<Double> list = new ArrayList<>();
-
-        for (DataRecord r : records) {
-            String val = r.getField(column);
-            if (val != null && !val.trim().isEmpty()) {
-                try {
-                    list.add(Double.parseDouble(val));
-                } catch (Exception ignored) {}
-            }
-        }
-        return list;
-    }
-
-	
 }

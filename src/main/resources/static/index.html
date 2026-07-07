@@ -349,22 +349,22 @@
     </div>
 
     <!-- Encoding Type -->
-    <div class="form-group">
-      <label for="encodingType">Encoding Type</label>
-      <select id="encodingType">
-        <option value="label" selected>Label Encoding</option>
-        <option value="onehot">One-Hot Encoding</option>
-      </select>
-    </div>
+	<div class="form-group" id="encodingTypeGroup" style="display:none;">
+	  <label for="encodingType">Encoding Type</label>
+	  <select id="encodingType">
+	    <option value="label" selected>Label Encoding</option>
+	    <option value="onehot">One-Hot Encoding</option>
+	  </select>
+	</div>
 
     <!-- Normalization Type -->
-    <div class="form-group">
-      <label for="normalizationType">Normalization Type</label>
-      <select id="normalizationType">
-        <option value="minmax" selected>Min-Max Scaling</option>
-        <option value="zscore">Z-Score Standardization</option>
-      </select>
-    </div>
+	<div class="form-group" id="normalizationTypeGroup">
+	  <label for="normalizationType">Normalization Type</label>
+	  <select id="normalizationType">
+	    <option value="minmax" selected>Min-Max Scaling</option>
+	    <option value="zscore">Z-Score Standardization</option>
+	  </select>
+	</div>
 
     <!-- File Paths -->
     <div class="form-group">
@@ -467,11 +467,15 @@
 		  // ── Toggle sub-input visibility ──────────────────
 		  function toggleSubInput(checkboxId, groupId) {
 		    const checked = document.getElementById(checkboxId).checked;
-		    const group   = document.getElementById(groupId);
-		    if (checked) {
-		      group.classList.add('visible');
-		    } else {
-		      group.classList.remove('visible');
+		    document.getElementById(groupId).classList.toggle('visible', checked);
+
+		    // Show/hide encoding type dropdown alongside catColsGroup
+		    if (groupId === 'catColsGroup') {
+		      document.getElementById('encodingTypeGroup').style.display = checked ? 'block' : 'none';
+		    }
+		    // Show/hide normalization type dropdown alongside numColsGroup
+		    if (groupId === 'numColsGroup') {
+		      document.getElementById('normalizationTypeGroup').style.display = checked ? 'block' : 'none';
 		    }
 		  }
 
@@ -590,9 +594,8 @@
 		    html += `<div style="margin-bottom:8px;">
 		               Type: <span class="tag purple">${badge} Encoding</span>
 		             </div>`;
-
-		    // Encoded columns list
-		    data.encodedColumns.forEach(col => {
+			const cols = extractColNames(data.encodedColumns);
+			cols.forEach(col => {
 		      html += `<div class="detail-row">
 		                 <span class="col-name">${col}</span>
 		                 <span class="col-val tag purple">encoded ✓</span>
@@ -646,7 +649,8 @@
 		             </div>`;
 
 		    // Normalized columns
-		    data.normalizedColumns.forEach(col => {
+			const cols = extractColNames(data.normalizedColumns);
+			cols.forEach(col => {
 		      html += `<div class="detail-row">
 		                 <span class="col-name">${col}</span>
 		                 <span class="col-val tag green">normalized ✓</span>
@@ -710,23 +714,32 @@
 		      removeDuplicates     : document.getElementById('removeDuplicates').checked,
 		      normalizeNumerical   : doNormalize,
 		      encodeCategorical    : doEncode,
-		      normalizationType    : document.getElementById('normalizationType').value,
-		      encodingType         : document.getElementById('encodingType').value,
+			  normalizationType : doNormalize ? document.getElementById('normalizationType').value : null,
+			  encodingType      : doEncode    ? document.getElementById('encodingType').value       : null,
 
-		      // ✅ Send column arrays (empty array if step is disabled)
-		      numericalColumns : doNormalize
-		        ? parseCols(document.getElementById('numericalColumns').value)
-		        : [],
-		      categoricalColumns : doEncode
-		        ? parseCols(document.getElementById('categoricalColumns').value)
-		        : [],
+			  // ✅ Fixed
+			  categoricalColumns: doEncode
+			      ? parseCols(document.getElementById('categoricalColumns').value)
+			      : [],
 
+			  numericalColumns: doNormalize
+			      ? parseCols(document.getElementById('numericalColumns').value)
+			      : [],
 		      inputFilePath  : document.getElementById('inputPath').value.trim()
 		                        || 'src/main/resources/input.xlsx',
 		      outputFilePath : document.getElementById('outputPath').value.trim()
 		                        || 'src/main/resources/output.xlsx'
 		    };
 
+			if (doEncode && parseCols(document.getElementById('categoricalColumns').value).length === 0) {
+			    alert('⚠️ Please enter at least one categorical column name.');
+			    return; // ← stop execution, don't send request
+			  }
+
+			  if (doNormalize && parseCols(document.getElementById('numericalColumns').value).length === 0) {
+			    alert('⚠️ Please enter at least one numerical column name.');
+			    return; // ← stop execution, don't send request
+			  }
 		    // ── Loading state ───────────────────────────────
 		    btn.disabled         = true;
 		    btn.textContent      = '⏳ Running...';
@@ -737,7 +750,7 @@
 		    debugLog.textContent = '📤 REQUEST:\n' + JSON.stringify(requestBody, null, 2);
 
 		    // ── Fetch ───────────────────────────────────────
-		    fetch('http://localhost:8000/api/preprocess', {
+		    fetch('http://localhost:8001/api/preprocess', {
 		      method  : 'POST',
 		      headers : { 'Content-Type': 'application/json' },
 		      body    : JSON.stringify(requestBody)

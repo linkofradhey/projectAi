@@ -1,21 +1,11 @@
 package kumaranai.model;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class DataRecord {
-	
-	private Map<String , String> fields  = new HashMap<>();
-	
+
+    private final Map<String, String> fields = new LinkedHashMap<>();
 
     public String getField(String columnName) {
         return fields.get(columnName);
@@ -25,9 +15,9 @@ public class DataRecord {
         fields.put(columnName, value);
     }
 
-    public boolean isMissing(String columnName) {
-        String value = fields.get(columnName);
-        return value == null || value.trim().isEmpty();
+    // Convenience overload: accepts any type, converts to String
+    public void setField(String columnName, Object value) {
+        fields.put(columnName, value == null ? null : String.valueOf(value));
     }
 
     public boolean hasField(String columnName) {
@@ -36,5 +26,14 @@ public class DataRecord {
 
     public void removeField(String columnName) {
         fields.remove(columnName);
+    }
+
+    public Map<String, String> getFields() {
+        return new LinkedHashMap<>(fields);
+    }
+
+    @Override
+    public String toString() {
+        return "DataRecord" + fields;
     }
 }

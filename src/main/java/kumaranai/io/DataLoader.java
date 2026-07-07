@@ -12,7 +12,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory; // FIX #2: replaces XSSFWorkbook import
 import org.springframework.stereotype.Component;
 
 import kumaranai.model.DataRecord;
@@ -20,11 +20,14 @@ import kumaranai.model.DataRecord;
 @Component
 public class DataLoader {
 
+    /**
+     * Entry point — detects file type and routes to correct loader.
+     */
     public List<DataRecord> load(String filePath) {
         if (filePath.endsWith(".xlsx") || filePath.endsWith(".xls")) {
             return loadFromExcel(filePath);
         } else {
-            return loadFromCsv(filePath); 
+            return loadFromCsv(filePath);
         }
     }
 
@@ -32,21 +35,23 @@ public class DataLoader {
         List<DataRecord> records = new ArrayList<>();
 
         try (FileInputStream fis = new FileInputStream(new File(filePath));
-             Workbook workbook = new XSSFWorkbook(fis)) {
+             // FIX #2: WorkbookFactory handles both .xls and .xlsx
+             Workbook workbook = WorkbookFactory.create(fis)) {
 
-            Sheet sheet = workbook.getSheetAt(0); 
+            Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rowIterator = sheet.iterator();
 
-            // First row = headers
+            // Read header row
             List<String> headers = new ArrayList<>();
             if (rowIterator.hasNext()) {
                 Row headerRow = rowIterator.next();
                 for (Cell cell : headerRow) {
-                    headers.add(cell.getStringCellValue().trim());
+                    // FIX #3: Use getCellValueAsString() — safe for any cell type
+                    headers.add(getCellValueAsString(cell));
                 }
             }
 
-            // Remaining rows = data
+            // Read data rows
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 Map<String, String> fields = new LinkedHashMap<>();
@@ -56,7 +61,12 @@ public class DataLoader {
                     fields.put(headers.get(i), getCellValueAsString(cell));
                 }
 
-                records.add(new DataRecord(fields));
+                // FIX #1: DataRecord has no Map constructor — use setField() instead
+                DataRecord record = new DataRecord();
+                for (Map.Entry<String, String> entry : fields.entrySet()) {
+                    record.setField(entry.getKey(), entry.getValue());
+                }
+                records.add(record);
             }
 
             System.out.println("[DataLoader] Loaded " + records.size() + " records from Excel: " + filePath);
@@ -72,18 +82,21 @@ public class DataLoader {
         if (cell == null) return "";
         switch (cell.getCellType()) {
             case STRING:  return cell.getStringCellValue().trim();
-            case NUMERIC: 
+            case NUMERIC:
                 double val = cell.getNumericCellValue();
-                return (val == Math.floor(val)) 
-                    ? String.valueOf((long) val) 
+                return (val == Math.floor(val))
+                    ? String.valueOf((long) val)
                     : String.valueOf(val);
             case BOOLEAN: return String.valueOf(cell.getBooleanCellValue());
-            case BLANK:   return "";   // treated as missing value
+            case BLANK:   return "";  // treated as missing value
             default:      return "";
         }
     }
 
+    // FIX #4: Throw exception instead of silently returning empty list
     private List<DataRecord> loadFromCsv(String filePath) {
-        return new ArrayList<>();
+        throw new UnsupportedOperationException(
+            "[DataLoader] CSV loading is not yet implemented for: " + filePath
+        );
     }
 }

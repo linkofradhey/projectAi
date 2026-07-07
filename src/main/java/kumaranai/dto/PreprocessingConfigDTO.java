@@ -21,13 +21,14 @@ public class PreprocessingConfigDTO {
 	private List<String> categoricalColumns;
 	private boolean removeDuplicates;
 	private MissingValueHandler.Strategy missingValueStrategy; 
+	private String encodingType;
 
 	public PreprocessingConfigDTO() {
 	}
 
 	public PreprocessingConfigDTO(String inputFilePath, String outputFilePath, List<String> numericColumns,
 			List<String> categoricalColumns, boolean removeDuplicates,
-			MissingValueHandler.Strategy missingValueStrategy) {
+			MissingValueHandler.Strategy missingValueStrategy,String encodingType) {// to get the input from frontend
 
 		this.inputFilePath = inputFilePath;
 		this.outputFilePath = outputFilePath;
@@ -35,6 +36,8 @@ public class PreprocessingConfigDTO {
 		this.categoricalColumns = categoricalColumns;
 		this.removeDuplicates = removeDuplicates;
 		this.missingValueStrategy = missingValueStrategy;
+		this.encodingType = encodingType;
+		
 	}
 
 	@Override
@@ -42,6 +45,6 @@ public class PreprocessingConfigDTO {
 		return "PreprocessingConfigDTO{" + "inputFilePath='" + inputFilePath + '\'' + ", outputFilePath='"
 				+ outputFilePath + '\'' + ", numericColumns=" + numericColumns + ", categoricalColumns="
 				+ categoricalColumns + ", removeDuplicates=" + removeDuplicates + ", missingValueStrategy='"
-				+ missingValueStrategy + '\'' + '}';
+				+ missingValueStrategy + '\'' + "encodingType='"+encodingType + '\'' + '}';
 	}
 }

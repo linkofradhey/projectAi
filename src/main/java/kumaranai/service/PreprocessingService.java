@@ -18,68 +18,70 @@ import kumaranai.model.DataRecord;
 @Service
 public class PreprocessingService {
 
-	private final DataLoader dataLoader;
-	private final DataWriter dataWriter;
-	private final MissingValueHandler missingValueHandler;
-	private final DuplicateRemover duplicateRemover;
-	private final CategoricalEncoder categoricalEncoder;
-	private final NumericalNormalizer numericalNormalizer;
+    private final DataLoader dataLoader;
+    private final DataWriter dataWriter;
+    private final MissingValueHandler missingValueHandler;
+    private final DuplicateRemover duplicateRemover;
+    private final CategoricalEncoder categoricalEncoder;
+    private final NumericalNormalizer numericalNormalizer;
 
-	public PreprocessingService(DataLoader dataLoader, DataWriter dataWriter, MissingValueHandler missingValueHandler,
-			DuplicateRemover duplicateRemover, CategoricalEncoder categoricalEncoder,
-			NumericalNormalizer numericalNormalizer) {//constructor to intialize the value of the tools 
+    public PreprocessingService(DataLoader dataLoader, DataWriter dataWriter,
+            MissingValueHandler missingValueHandler, DuplicateRemover duplicateRemover,
+            CategoricalEncoder categoricalEncoder, NumericalNormalizer numericalNormalizer) {
 
-		this.dataLoader = dataLoader;
-		this.dataWriter = dataWriter;
-		this.missingValueHandler = missingValueHandler;
-		this.duplicateRemover = duplicateRemover;
-		this.categoricalEncoder = categoricalEncoder;
-		this.numericalNormalizer = numericalNormalizer;
-	}
+        this.dataLoader = dataLoader;
+        this.dataWriter = dataWriter;
+        this.missingValueHandler = missingValueHandler;
+        this.duplicateRemover = duplicateRemover;
+        this.categoricalEncoder = categoricalEncoder;
+        this.numericalNormalizer = numericalNormalizer;
+    }
 
-	public PreprocessingResultDTO process(PreprocessingConfigDTO config) {
-		try {
-			// STEP 1: Load raw data
-			List<DataRecord> records = dataLoader.load(config.getInputFilePath());
-			int totalLoaded = records.size();
+    public PreprocessingResultDTO process(PreprocessingConfigDTO config) {
+        try {
+            // STEP 1: Load raw data
+            List<DataRecord> records = dataLoader.load(config.getInputFilePath());
+            int totalLoaded = records.size();
 
-			// STEP 2: Handle missing values ✅ int type + Enum arg
-			int missingFilled = missingValueHandler.handle(records, config.getMissingValueStrategy());
+            // STEP 2: Handle missing values
+            int missingFilled = missingValueHandler.handle(records, config.getMissingValueStrategy());
 
-			// STEP 3: Remove duplicates
-			List<DataRecord> duplicatesRemoved = null;
-			if (config.isRemoveDuplicates()) {
-				duplicatesRemoved = duplicateRemover.remove(records);
-			}
+            // STEP 3: reassign records after duplicate removal
+            int beforeDedup = records.size();
+            if (config.isRemoveDuplicates()) {
+                records = duplicateRemover.remove(records); 
+            }
+            int duplicatesRemovedCount = beforeDedup - records.size();
 
-			// STEP 4: Encode categorical columns
-			categoricalEncoder.encode(records, config.getCategoricalColumns());
+            // STEP 4: Encode categorical columns (mutates records in-place)
+            records =categoricalEncoder.encode(records, config.getCategoricalColumns(),config.getEncodingType());
 
-			// STEP 5: Normalize numeric columns
-			numericalNormalizer.normalize(records, config.getNumericColumns());
+            // STEP 5: Normalize numeric columns (mutates records in-place)
+            records =numericalNormalizer.normalize(records, config.getNumericColumns());
 
-			// STEP 6: Write output
+            // STEP 6: Write fully cleaned output ✅
+            dataWriter.write(records, config.getOutputFilePath());
 
-			dataWriter.write(records, config.getOutputFilePath());
+            // STEP 7: Build result
+            PreprocessingResultDTO result = new PreprocessingResultDTO();
+            result.setTotalRowsLoaded(totalLoaded);
+            result.setMissingValuesFilled(missingFilled);
+            result.setDuplicatesRemoved(duplicatesRemovedCount); // ✅ now an int count
+            result.setTotalRowsAfterCleaning(records.size());
+            result.setOutputPath(config.getOutputFilePath());
+            result.setStatus("SUCCESS");
+            result.setMessage("Preprocessing completed successfully.");
 
-			// STEP 7: Build result
-			PreprocessingResultDTO result = new PreprocessingResultDTO();
-			result.setTotalRowsLoaded(totalLoaded);
-			result.setDuplicatesRemoved(duplicatesRemoved);
-			result.setMissingValuesFilled(missingFilled);
-			result.setTotalRowsAfterCleaning(records.size());
-			result.setOutputPath(config.getOutputFilePath());
-			result.setStatus("SUCCESS");
-			result.setMessage("Preprocessing completed successfully.");
+            return result;
 
-			return result;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			PreprocessingResultDTO result = new PreprocessingResultDTO();
+        } catch (IOException e) {
+            e.printStackTrace();
 
-			e.printStackTrace();
-			return result;
-		}
-		
-	}
+            // ✅ Return a meaningful error result instead of empty DTO
+            PreprocessingResultDTO errorResult = new PreprocessingResultDTO();
+            errorResult.setStatus("FAILED");
+            errorResult.setMessage("Preprocessing failed: " + e.getMessage());
+            return errorResult;
+        }
+    }
 }
