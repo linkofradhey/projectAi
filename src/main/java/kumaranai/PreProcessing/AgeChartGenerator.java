@@ -26,6 +26,6 @@ public class AgeChartGenerator {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ChartUtils.writeChartAsPNG(baos, chart, 600, 400);
-        return baos.toByteArray();   S
+        return baos.toByteArray();   
     }
 }
