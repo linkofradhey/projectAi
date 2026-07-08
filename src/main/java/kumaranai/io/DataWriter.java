@@ -39,9 +39,7 @@ public class DataWriter {
         }
     }
 
-    // ✅ FIX 1: Collect headers from ALL records (handles One-Hot new columns)
-    // ✅ FIX 2: Uses LinkedHashSet to preserve insertion order
-    private String[] collectHeaders(List<DataRecord> records) {
+        private String[] collectHeaders(List<DataRecord> records) {
         LinkedHashSet<String> allHeaders = new LinkedHashSet<>();
         for (DataRecord record : records) {
             allHeaders.addAll(record.getFields().keySet());
@@ -51,7 +49,7 @@ public class DataWriter {
 
     private void writeXlsx(List<DataRecord> records, File outputFile) throws IOException {
 
-        String[] headers = collectHeaders(records); // ✅ uses fixed header collection
+        String[] headers = collectHeaders(records); 
 
         try (Workbook workbook = new XSSFWorkbook();
              FileOutputStream fos = new FileOutputStream(outputFile)) {
@@ -84,20 +82,19 @@ public class DataWriter {
             }
 
             workbook.write(fos);
-            // ✅ FIX 3: Removed redundant fos.flush() — try-with-resources handles it
 
-            System.out.println("[DataWriter] ✅ XLSX written → "
+            System.out.println("[DataWriter]  XLSX written → "
                     + outputFile.getAbsolutePath() + " | Rows: " + records.size());
 
         } catch (IOException e) {
-            System.err.println("[DataWriter] ❌ XLSX write failed: " + e.getMessage());
+            System.err.println("[DataWriter]  XLSX write failed: " + e.getMessage());
             throw e;
         }
     }
 
     private void writeCsv(List<DataRecord> records, File outputFile) throws IOException {
 
-        String[] headers = collectHeaders(records); // ✅ uses fixed header collection
+        String[] headers = collectHeaders(records); 
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
 
@@ -118,11 +115,11 @@ public class DataWriter {
 
             writer.flush();
 
-            System.out.println("[DataWriter] ✅ CSV written → "
+            System.out.println("[DataWriter]  CSV written → "
                     + outputFile.getAbsolutePath() + " | Rows: " + records.size());
 
         } catch (IOException e) {
-            System.err.println("[DataWriter] ❌ CSV write failed: " + e.getMessage());
+            System.err.println("[DataWriter]  CSV write failed: " + e.getMessage());
             throw e;
         }
     }

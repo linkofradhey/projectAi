@@ -67,7 +67,7 @@ public class PreprocessingService {
 			// ── STEP 6: Build chart data from the ORIGINAL raw copy ──────────
 			List<String> ageColumnList = List.of("age");
 
-			// 6a. Count raw age values — nulls and blanks excluded ✅
+			// 6a. Count raw age values — nulls and blanks excluded 
 			Map<String, Integer> valueCounts = new LinkedHashMap<>();
 			for (DataRecord r : pieRecords) {
 				String val = r.getField("age");
@@ -86,11 +86,11 @@ public class PreprocessingService {
 				String encodedVal = encodedPieRecords.get(i).getField("age");
 
 				if (originalAge == null || originalAge.isBlank())
-					continue; // ✅ exclude missing
+					continue; //  exclude missing
 				if (encodedVal == null || encodedVal.isBlank())
-					continue; // ✅ exclude bad encode
+					continue; //  exclude bad encode
 				if (!valueCounts.containsKey(originalAge))
-					continue; // ✅ keep maps in sync
+					continue; // keep maps in sync
 
 				try {
 					encodingMap.putIfAbsent(originalAge, Integer.parseInt(encodedVal));

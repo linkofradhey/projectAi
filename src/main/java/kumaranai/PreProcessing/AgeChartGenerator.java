@@ -10,7 +10,6 @@ import org.jfree.data.general.DefaultPieDataset;
 
 public class AgeChartGenerator {
 
-    // ── Returns PNG bytes ─────────────────────────────────────────────
     public byte[] generatePieChart(Map<String, Integer> valueCounts,
                                    Map<String, Integer> encodingMap) throws Exception {
 
@@ -27,6 +26,6 @@ public class AgeChartGenerator {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ChartUtils.writeChartAsPNG(baos, chart, 600, 400);
-        return baos.toByteArray();   // ← return bytes, don't write to disk
+        return baos.toByteArray();   S
     }
 }
