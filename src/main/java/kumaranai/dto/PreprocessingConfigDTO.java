@@ -69,7 +69,10 @@ public class PreprocessingConfigDTO {
     private List<String> categoricalColumns;
     private String encodingType;           // "label" or "onehot"
 
-    private List<String> numericColumns;   // columns to normalize
+    private List<String> numericalColumns;   // columns to normalize
+
+	public String normalizationType;
+		
 
     // ── Getters & Setters ─────────────────────────────────────────────
 //    public String getInputFilePath()               { return inputFilePath; }

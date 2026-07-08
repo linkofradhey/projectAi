@@ -12,28 +12,28 @@ import org.springframework.stereotype.Component;
 import kumaranai.model.DataRecord;
 @Component
 public class NumericalNormalizer {
- public enum NormalizationType {
-     MIN_MAX,    // Scales values to [0, 1]
-     Z_SCORE,    // Standardizes to mean=0, std=1
-     ROBUST      // Uses median and IQR — resistant to outliers
- }
+// public enum NormalizationType {
+//     MIN_MAX,    // Scales values to [0, 1]
+//     Z_SCORE,    // Standardizes to mean=0, std=1
+//     ROBUST      // Uses median and IQR — resistant to outliers
+// }
 
- private final NormalizationType normalizationType;
+// private final NormalizationType normalizationType;
 
  private final Map<String, double[]> statsRegistry = new LinkedHashMap<>();
 
 
- public NumericalNormalizer() {
-     this.normalizationType = NormalizationType.MIN_MAX;
- }
+// public NumericalNormalizer() {
+//     this.normalizationType = NormalizationType.MIN_MAX;
+// }
 
- public NumericalNormalizer(NormalizationType normalizationType) {
-     this.normalizationType = normalizationType;
- }
+// public NumericalNormalizer(NormalizationType normalizationType) {
+//     this.normalizationType = normalizationType;
+// }
 
 
  
- public List<DataRecord> normalize(List<DataRecord> records, List<String> numericalColumns) {
+ public List<DataRecord> normalize(List<DataRecord> records, List<String> numericalColumns,String normalizationType) {
 
      if (records == null || records.isEmpty()) {
          System.out.println("[NumericalNormalizer] No records to process.");
@@ -46,9 +46,9 @@ public class NumericalNormalizer {
      }
 
      switch (normalizationType) {
-         case MIN_MAX: return applyMinMax(records, numericalColumns);
-         case Z_SCORE: return applyZScore(records, numericalColumns);
-         case ROBUST:  return applyRobust(records, numericalColumns);
+         case "minmax": return applyMinMax(records, numericalColumns);
+         case "zscore": return applyZScore(records, numericalColumns);
+         case "robust":  return applyRobust(records, numericalColumns);
          default:      return records;
      }
  }
@@ -74,7 +74,7 @@ public class NumericalNormalizer {
          statsRegistry.put(column, new double[]{min, max});
 
          for (DataRecord record : records) {
-             applyTransform(record, column, v -> (v - min) / range);
+             applyTransform(record, column, v -> (v - min) / range);//
          }
 
          System.out.println("[NumericalNormalizer] MIN_MAX | Column '" + column
@@ -204,13 +204,13 @@ public class NumericalNormalizer {
      return Collections.unmodifiableMap(statsRegistry);
  }
 
- public double inverseTransform(String column, double scaledValue) {
+ public double inverseTransform(String column, double scaledValue,String normalizationType) {
      double[] stats = statsRegistry.get(column);
      if (stats == null) throw new IllegalArgumentException("No stats found for column: " + column);
 
      switch (normalizationType) {
-         case MIN_MAX: return scaledValue * (stats[1] - stats[0]) + stats[0]; // v * range + min
-         case Z_SCORE: return scaledValue * stats[1] + stats[0];              // v * std + mean
+         case "minmax": return scaledValue * (stats[1] - stats[0]) + stats[0]; // v * range + min
+         case "zscore": return scaledValue * stats[1] + stats[0];              // v * std + mean
          default:      throw new UnsupportedOperationException(
                  "Inverse transform not supported for: " + normalizationType);
      }

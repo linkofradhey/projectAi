@@ -63,10 +63,7 @@ public class PreprocessingService {
 			pieRecords= records;//mapping to get missing values and duplicate in piechart
 			// STEP 4: Encode categorical columns
 			records = categoricalEncoder.encode(records, config.getCategoricalColumns(), config.getEncodingType());
-
-			// STEP 5: Normalize numeric columns
-			records = numericalNormalizer.normalize(records, config.getNumericColumns());
-
+//till here correct
 			// ── STEP 6: Build chart data from the ORIGINAL raw copy ──────────
 			List<String> ageColumnList = List.of("age");
 
@@ -113,15 +110,7 @@ public class PreprocessingService {
 				System.out.println("ℹ️ Skipping pie chart — no valid age data found.");
 			}
 			
-//			// ── EXISTING: Pie chart generation (around step 6d) ──────────
-//			String pieChartBase64 = null;
-//			if (!valueCounts.isEmpty() && !encodingMap.isEmpty()) {
-//			    AgeChartGenerator chartGen = new AgeChartGenerator();
-//			    byte[] pieChartBytes = chartGen.generatePieChart(valueCounts, encodingMap);
-//			    pieChartBase64 = Base64.getEncoder().encodeToString(pieChartBytes);
-//			} else {
-//			    System.out.println("ℹ️ Skipping pie chart — no valid age data found.");
-//			}
+
 
 			// ── NEW: Bar chart generation (add right below) ──────────────
 			String barChartBase64 = null;
@@ -132,9 +121,12 @@ public class PreprocessingService {
 			} else {
 			    System.out.println("ℹ️ Skipping bar chart — no valid age data found.");
 			}
+
+			// STEP 5: Normalize numeric columns
+			records = numericalNormalizer.normalize(records, config.getNumericalColumns(),config.getNormalizationType());
+//we have added in the last because it normalize the value and that value is less than 1 so we are going to add in last
 			// STEP 7: Write cleaned output
 			dataWriter.write(records, config.getOutputFilePath());
-
 			// STEP 8: Build and return result
 			PreprocessingResultDTO result = new PreprocessingResultDTO();
 			result.setTotalRowsLoaded(totalLoaded);
@@ -142,8 +134,8 @@ public class PreprocessingService {
 			result.setDuplicatesRemoved(duplicatesRemovedCount);
 			result.setTotalRowsAfterCleaning(records.size());
 			result.setOutputPath(config.getOutputFilePath());
-			result.setPieChartBase64(pieChartBase64); // ← chart goes into result
-			result.setBarChartBase64(barChartBase64);     // ← THIS LINE ADDED?
+			result.setPieChartBase64(pieChartBase64); 
+			result.setBarChartBase64(barChartBase64);     
 
 			result.setStatus("SUCCESS");
 			result.setMessage("Preprocessing completed successfully.");
