@@ -17,7 +17,6 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 public class AgeBarChartGenerator {
 
-    // ── Returns PNG bytes (same pattern as AgeChartGenerator) ─────────
     public byte[] generateBarChart(Map<String, Integer> valueCounts,
                                    Map<String, Integer> encodingMap) throws Exception {
 

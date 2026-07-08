@@ -20,10 +20,7 @@
 
 package kumaranai.dto;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 
 @Data
@@ -37,12 +34,11 @@ public class PreprocessingResultDTO {
 
     // ── Output ─────────────────────────────────────────────────────────
     private String outputPath;
-    private String status;    // "SUCCESS" or "FAILED"
+    private String status;   
     private String message;
 
-    // ── Chart (Base64-encoded PNG) ─────────────────────────────────────
-    private String pieChartBase64;   // ← UI renders this as <img src="data:image/png;base64,...">
-    private String barChartBase64;   // ← optional bar chart
+    private String pieChartBase64;   
+    private String barChartBase64;  
 
     // ── Getters & Setters ──────────────────────────────────────────────
 //    public int getTotalRowsLoaded()                  { return totalRowsLoaded; }
