@@ -15,7 +15,6 @@ public class DataRecord {
         fields.put(columnName, value);
     }
 
-    // Convenience overload: accepts any type, converts to String
     public void setField(String columnName, Object value) {
         fields.put(columnName, value == null ? null : String.valueOf(value));
     }

@@ -18,7 +18,9 @@
       padding: 40px 20px;
       min-height: 100vh;
     }
-
+	#barChartSection {
+	  border-top: 4px solid #38a169;
+	}
     h1 { font-size: 1.8rem; color: #1a202c; margin-bottom: 8px; }
     p.subtitle { color: #718096; margin-bottom: 32px; font-size: 0.95rem; }
 
@@ -280,6 +282,60 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
+	/* ── Age Pie Chart Section ───────────────────────── */
+	.chart-section {
+	  width: 100%;
+	  max-width: 700px;
+	  background: white;
+	  border-radius: 12px;
+	  padding: 24px 28px;
+	  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+	  margin-bottom: 28px;
+	  text-align: center;
+	}
+
+	.chart-section h2 {
+	  font-size: 1rem;
+	  color: #2d3748;
+	  margin-bottom: 16px;
+	  border-bottom: 1px solid #e2e8f0;
+	  padding-bottom: 8px;
+	  text-align: left;
+	}
+
+	.chart-wrapper {
+	  display: flex;
+	  flex-direction: column;
+	  align-items: center;
+	  gap: 12px;
+	}
+
+	.chart-wrapper img {
+	  max-width: 100%;
+	  width: 500px;
+	  height: auto;
+	  border-radius: 10px;
+	  border: 1px solid #e2e8f0;
+	  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+	  transition: transform 0.2s;
+	}
+
+	.chart-wrapper img:hover {
+	  transform: scale(1.02);
+	}
+
+	.chart-caption {
+	  font-size: 0.82rem;
+	  color: #a0aec0;
+	  font-style: italic;
+	}
+
+	.chart-error {
+	  font-size: 0.85rem;
+	  color: #e53e3e;
+	  font-style: italic;
+	  margin-top: 8px;
+	}
   </style>
 </head>
 <body>
@@ -439,12 +495,29 @@
 
 		  </div>
 		</div>
-
+		<!-- ── Age Distribution Pie Chart ─────────────────── -->
+				  <div class="chart-section" id="chartSection" style="display:none;">
+				    <h2>🥧 Age Distribution Chart</h2>
+				    <div class="chart-wrapper">
+				      <img id="pieChartImg" src="" alt="Age Distribution Pie Chart" />
+				      <p class="chart-caption" id="chartCaption">Age value distribution before encoding</p>
+				    </div>
+				  </div>
+				  <!-- ── Bar Chart Section ─────────────────────────────── -->
+				  <div class="chart-section" id="barChartSection" style="display:none;">
+				    <h2>📊 Age Distribution — Bar Chart</h2>
+				    <div class="chart-wrapper">
+				      <img id="barChartImg" src="" alt="Age Bar Chart" />
+				      <p class="chart-caption" id="barChartCaption">
+				        Age value distribution with encoding labels
+				      </p>
+				    </div>
+				  </div>
 		<!-- ── Output Path ─────────────────────────────── -->
 		<div class="output-path">
 		  📁 Output saved to: <span id="outputPathDisplay">—</span>
 		</div>
-
+		
 		<!-- ── Debug Panel ─────────────────────────────── -->
 		<div class="debug-panel" id="debugPanel">
 		  <div class="debug-title">📋 Request / Response Log</div>
@@ -456,7 +529,74 @@
 		     JAVASCRIPT
 		════════════════════════════════════════════════ -->
 		<script>
+			
+			// ── Render Bar Chart (same approach as renderPieChart) ────────
+			function renderBarChart(data) {
+			  const section   = document.getElementById('barChartSection');
+			  const imgEl     = document.getElementById('barChartImg');
+			  const captionEl = document.getElementById('barChartCaption');
 
+			  // Hide if backend returned no bar chart data
+			  if (!data || !data.barChartBase64) {
+			    section.style.display = 'none';
+			    return;
+			  }
+
+			  // Handle base64 prefix
+			  const base64Src = data.barChartBase64.startsWith('data:image')
+			    ? data.barChartBase64
+			    : 'data:image/png;base64,' + data.barChartBase64;
+
+			  imgEl.onerror       = null;
+			  imgEl.style.display = '';
+			  imgEl.src           = base64Src;
+
+			  captionEl.textContent = 'Age value distribution with encoding labels';
+			  section.style.display = 'block';
+
+			  // Error fallback
+			  imgEl.onerror = function() {
+			    imgEl.style.display = 'none';
+			    var errMsg = document.createElement('p');
+			    errMsg.className   = 'chart-error';
+			    errMsg.textContent = '⚠️ Bar chart could not be rendered.';
+			    section.querySelector('.chart-wrapper').appendChild(errMsg);
+			  };
+			}
+			// ── Render Age Pie Chart from base64 ─────────────────
+			function renderPieChart(data) {
+			  const section   = document.getElementById('chartSection');
+			  const imgEl     = document.getElementById('pieChartImg');
+			  const captionEl = document.getElementById('chartCaption');
+
+			  // Hide chart if backend returned null or no base64
+			  if (!data || !data.pieChartBase64) {
+			    section.style.display = 'none';
+			    return;
+			  }
+
+			  // Build valid src — handle if backend already prefixes "data:image"
+			  const base64Src = data.pieChartBase64.startsWith('data:image')
+			    ? data.pieChartBase64
+			    : `data:image/png;base64,${data.pieChartBase64}`;
+
+				imgEl.onerror = null;
+				imgEl.src = base64Src;
+
+			  captionEl.textContent = 'Age value distribution (before encoding)';
+
+			  // Show the section
+			  section.style.display = 'block';
+
+			  // Graceful fallback if image is corrupt/invalid
+			  imgEl.onerror = () => {
+			    imgEl.style.display = 'none';
+			    const errMsg = document.createElement('p');
+			    errMsg.className   = 'chart-error';
+			    errMsg.textContent = '⚠️ Chart could not be rendered. Invalid image data.';
+			    section.querySelector('.chart-wrapper').appendChild(errMsg);
+			  };
+			}
 		  // ── Toggle constant value input ──────────────────
 		  function toggleConstantField() {
 		    const strategy = document.getElementById('strategy').value;
@@ -691,10 +831,31 @@
 		        document.getElementById(id).innerHTML =
 		          '<span class="no-data">Run preprocessing to see results.</span>';
 		      });
-		    document.getElementById('totalRows').textContent    = '—';
-		    document.getElementById('duplicatesCard').textContent = '—';
-		    document.getElementById('missingCard').textContent  = '—';
-		    document.getElementById('outputPathDisplay').textContent = '—';
+
+		    document.getElementById('totalRows').textContent       = '--';
+		    document.getElementById('duplicatesCard').textContent  = '--';
+		    document.getElementById('missingCard').textContent     = '--';
+
+		    // ✅ Safe null-check for commented-out element
+		    const outEl = document.getElementById('outputPathDisplay');
+		    if (outEl) outEl.textContent = '--';
+
+		    // ✅ Full chart reset
+		    document.getElementById('chartSection').style.display  = 'none';
+		    document.getElementById('pieChartImg').src             = '';
+		    document.getElementById('pieChartImg').style.display   = '';   // ✅ restore visibility
+		    document.getElementById('pieChartImg').onerror         = null; // ✅ clear stale handler
+		    document.getElementById('chartCaption').textContent    = 'Age value distribution before encoding';
+
+			// ✅ Bar chart reset (NEW — add alongside existing pie chart reset)
+			document.getElementById('barChartSection').style.display = 'none';
+			document.getElementById('barChartImg').src               = '';
+			document.getElementById('barChartImg').style.display     = '';
+			document.getElementById('barChartImg').onerror           = null;
+			document.getElementById('barChartCaption').textContent   = 'Age value distribution with encoding labels';
+
+			// ✅ Change existing single error cleanup to handle both charts
+			document.querySelectorAll('.chart-error').forEach(function(el) { el.remove(); });
 		  }
 
 		  // ── Main preprocessing call ───────────────────────
@@ -774,7 +935,9 @@
 			  renderDuplicatesDetail(data);
 			  renderEncodingDetail(data);
 			  renderNormalizationDetail(data);
-
+			  renderPieChart(data);
+			  renderBarChart(data);
+			
 			  statusEl.className   = 'status-badge status-success';   // ✅ Same level
 			  statusEl.textContent = '✅ Preprocessing Complete!';
 

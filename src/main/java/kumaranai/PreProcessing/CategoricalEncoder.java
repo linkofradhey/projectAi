@@ -93,7 +93,7 @@ public class CategoricalEncoder {
 	        if (column.equals("age")) {
 	            for (DataRecord record : records) {
 	                Object raw = record.getField(column);
-	                if (raw != null) {
+	                if (raw != null || raw !="") {
 	                    int age = (int) Double.parseDouble(raw.toString());
 	                    int label;
 
@@ -111,7 +111,12 @@ public class CategoricalEncoder {
 	                }
 	            }
 	            System.out.println("[CategoricalEncoder] LABEL | Column 'age' → bucket labels {<25=0, 25-34=1, 35-44=2, ≥45=3}");
-	            continue; 
+	            if (categoricalColumns.size()==1) {
+	            	return records;
+	            }else {
+	            	continue;
+	            	
+	            }
 	        }
 
 	        Map<String, Integer> labelMap = buildLabelMap(records, column);
